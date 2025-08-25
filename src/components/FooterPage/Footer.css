@@ -1,0 +1,72 @@
+.footer {
+    padding: 4rem 6rem;
+    background-color: black;
+    color: white;
+}
+
+/* Top Section */
+.top {
+    display: flex;
+    align-items: center;
+    text-align: start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+/* Social Media Icons */
+.top i {
+    color: white;
+    font-size: 2rem;  /* ✅ Fixed incorrect property */
+    margin-left: 1rem;
+}
+
+.top i:hover {
+    color: #01959a;
+}
+
+/* Bottom Section */
+.bottom {
+    padding-top: 2rem;
+    display: flex;
+    text-align: start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.bottom div {
+    display: flex;
+    flex-direction: column;   
+}
+
+/* Bottom Section Headings */
+.bottom h4 {
+    font-size: 1.3rem;
+    padding: 1rem 0 .8rem 0;  /* ✅ Fixed "o" typo (should be "0") */
+}
+
+/* Links inside Bottom Section */
+.bottom a {
+    text-decoration: none;
+    color: #fafafa;
+    padding-bottom: 0.4rem;
+    font-size: 1.1rem;
+}
+
+/* Responsive Design for Small Screens */
+@media screen and (max-width: 850px) {
+    .footer {
+        padding: 4rem 2rem;
+    }
+
+    .footer i {
+        margin: 1rem 1rem 0 0;  /* ✅ Fixed "o o" typo (should be "0 0") */
+    }
+
+    .bottom {
+        flex-direction: column;
+    }
+
+    .bottom div {
+        width: 50%;
+    }
+}

@@ -1,0 +1,87 @@
+.about-container {
+  margin: 4rem 6rem;
+  text-align: center;
+  color: #111;
+  animation: fadeInUp 1s ease forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.about-container h1 {
+  margin-bottom: 1rem;
+  font-weight: 800;
+  font-size: 3rem;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+  animation: zoomIn 1.2s ease forwards;
+}
+
+.about-container h1::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  margin: 0.5rem auto 0;
+  background-color: #ff4c60;
+  border-radius: 2px;
+}
+
+.about-container p {
+  margin-bottom: 2rem;
+  font-weight: 400;
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.8;
+  color: #444;
+  animation: fadeIn 2s ease;
+}
+
+/* Cinematic fade-in animation */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 850px) {
+  .about-container {
+    margin: 4rem 2rem;
+  }
+
+  .about-container h1 {
+    font-size: 2.2rem;
+  }
+
+  .about-container p {
+    font-size: 1rem;
+  }
+}

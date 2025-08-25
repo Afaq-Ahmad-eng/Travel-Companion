@@ -1,0 +1,191 @@
+.form-container {
+  margin: -4rem 6rem 4rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 1s ease-in-out;
+  color: #1a1a1a;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* ✨ Animated background bubbles */
+.form-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), transparent 60%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1), transparent 60%);
+  animation: floatBackground 12s infinite linear;
+  z-index: -2;
+}
+
+.form-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  backdrop-filter: blur(15px);
+  border-radius: inherit;
+  z-index: -1;
+}
+
+@keyframes floatBackground {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.form-container h1 {
+  text-align: center;
+  font-size: 2.4rem;
+  margin-bottom: 2rem;
+  color: #161e3d; /* darker and richer blue */
+  font-weight: 900; /* very bold */
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 6px rgba(26, 42, 108, 0.6);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
+.form-container h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #4a90e2, #357ab8);
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.7);
+}
+
+
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin: auto;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 240, 0.9));
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+  border: 1px solid rgba(200, 200, 200, 0.4);
+}
+
+.form-container form:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.form-container input,
+.form-container textarea {
+  font-size: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.8rem;
+  background-color: #fefefe;
+  transition: all 0.3s ease;
+  resize: vertical;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-container input:hover,
+.form-container textarea:hover {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.1);
+}
+
+.form-container input:focus,
+.form-container textarea:focus {
+  border-color: #4a90e2;
+  background-color: #fff;
+  box-shadow: 0 0 0 5px rgba(74, 144, 226, 0.15);
+  outline: none;
+}
+
+.form-container button {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #4a90e2, #357ab8);
+  color: #fff;
+  border: none;
+  border-radius: 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  box-shadow: 0 8px 16px rgba(74, 144, 226, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.form-container button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+}
+
+.form-container button:hover::after {
+  left: 100%;
+}
+
+.form-container button:hover {
+  background: linear-gradient(135deg, #3b7bc4, #2c5f9e);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(74, 144, 226, 0.5), 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🔄 Responsive */
+@media screen and (max-width: 768px) {
+  .form-container {
+    margin: 1rem 1rem 2rem;
+    padding: 1.5rem;
+  }
+
+  .form-container form {
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  .form-container h1 {
+    font-size: 1.6rem;
+  }
+
+  .form-container button {
+    align-self: center;
+    width: 100%;
+    text-align: center;
+  }
+}

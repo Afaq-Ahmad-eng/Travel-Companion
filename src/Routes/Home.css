@@ -1,0 +1,74 @@
+/* Home.css */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000; /* High z-index to be on top */
+  max-width: 350px;
+  animation: slideIn 0.5s ease forwards;
+  color: white; /* White text for contrast on green */
+}
+
+.toast-budget {
+  background-color: #38a169; /* A natural, friendly green */
+}
+
+.toast-translator {
+  background-color: #2f855a; /* A slightly darker green for variety */
+}
+
+.toast-content {
+  flex-grow: 1;
+  margin-right: 15px;
+}
+
+.toast-content p {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.toast-link {
+  color: #d6ffbc; /* A light, contrasting green for the link */
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.toast-close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  align-self: flex-start; /* Aligns the X to the top */
+}
+
+/* Animation for toast entry */
+@keyframes slideIn {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design for Mobile */
+@media screen and (max-width: 768px) {
+  .toast {
+    bottom: 10px;
+    right: 10px;
+    left: 10px; /* Add left margin */
+    max-width: none; /* Override fixed width */
+  }
+}

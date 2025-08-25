@@ -1,0 +1,117 @@
+.search-bar-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  margin: 5px 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* 🎆 Dark Blurred Animated Background */
+.search-bar-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, #1e1f26, #2c3e50, #34495e, #1c1c1c);
+  animation: darkGradientMove 12s ease infinite;
+  filter: blur(70px);
+  z-index: -1;
+  opacity: 0.7;
+}
+
+@keyframes darkGradientMove {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.search-bar {
+  display: flex;
+  width: 100%;
+  max-width: 600px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 50px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  transition: transform 0.3s ease;
+}
+
+.search-bar:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 15px 20px;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background: transparent;
+  border-radius: 50px 0 0 50px;
+  color: #333;
+}
+
+.search-bar input::placeholder {
+  color: #777;
+}
+
+.search-bar button {
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  width: 30%;
+  height: 100%;
+  padding:  20px;
+  border-radius: 0 50px 50px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-image: linear-gradient(to right, #34495e, #2c3e50);
+  
+}
+
+.search-bar button:hover {
+  background-color: #1a252f;
+  background-image: linear-gradient(to right, #2c3e50, #1e272e);
+  transform: scale(1.05);
+}
+
+/* 📱 Responsive Styling */
+@media (max-width: 480px) {
+  .search-bar-container {
+    padding: 20px 10px;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    border-radius: 20px;
+  }
+
+  .search-bar input,
+  .search-bar button {
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .search-bar input {
+    border-bottom: 1px solid #ccc;
+  }
+
+  .search-bar button {
+    border-radius: 0 0 20px 20px;
+  }
+}

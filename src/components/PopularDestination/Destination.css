@@ -1,0 +1,214 @@
+.destination {
+    margin: 4rem 2rem;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+.destination h1 {
+    font-size: 2.8rem;
+    text-align: center;
+    color: #000000;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.destination h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #01959a, #03c0c8);
+    border-radius: 2px;
+}
+
+.first-desc {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4.5rem;
+    gap: 2rem;
+}
+
+.first-desc-reverse {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4.5rem;
+    gap: 2rem;
+}
+
+.desc-text {
+    width: 45%;
+    text-align: start;
+    font-size: 1.1rem;
+    color: #070808;
+    line-height: 1.6;
+}
+
+.desc-text h2 {
+    padding-bottom: 1rem;
+    color: #000000;
+    font-size: 2rem;
+    margin-top: 0;
+}
+
+.image {
+    position: relative;
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.image img {
+    width: 48%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s cubic-bezier(0.25, 0.45, 0.45, 0.95);
+    transform-origin: center center;
+    will-change: transform;
+}
+
+/* Zoom hover effect */
+.image img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.image img:nth-child(2) {
+    position: absolute;
+    top: -10%;
+    right: 0;
+}
+
+/* Ensure the overlapping image zooms properly */
+.image img:nth-child(2):hover {
+    transform: scale(1.05) translateY(-5%);
+}
+
+.see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+}
+
+.see-more-btn {
+    background: linear-gradient(135deg, #23631d, #010805);
+    color: white;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 40px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(1, 149, 154, 0.3);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.see-more-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+
+.see-more-btn:hover {
+    background: linear-gradient(135deg, #017a7e, #02989f);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 125, 129, 0.4);
+}
+
+.see-more-btn:hover::before {
+    left: 100%;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 850px) {
+    .destination {
+        margin: 3rem 1rem;
+        padding: 1.5rem;
+    }
+    
+    .destination h1 {
+        font-size: 2.2rem;
+    }
+    
+    .first-desc,
+    .first-desc-reverse {
+        flex-direction: column-reverse;
+        margin-top: 3rem;
+        gap: 1.5rem;
+    }
+    
+    .desc-text {
+        width: 100%;
+        font-size: 1rem;
+    }
+    
+    .desc-text h2 {
+        font-size: 1.6rem;
+    }
+    
+    .image {
+        width: 100%;
+        margin: 1.5rem 0;
+    }
+    
+    .image img {
+        height: 220px;
+    }
+    
+    /* Adjust hover effect for mobile */
+    .image img:hover {
+        transform: scale(1.03);
+    }
+    
+    .see-more-btn {
+        width: 80%;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .destination h1 {
+        font-size: 1.8rem;
+    }
+    
+    .image img {
+        height: 180px;
+    }
+    
+    .desc-text h2 {
+        font-size: 1.4rem;
+    }
+    
+    .see-more-btn {
+        width: 100%;
+    }
+    
+    /* Disable hover effects on touch devices */
+    @media (hover: none) {
+        .image img:hover {
+            transform: none;
+        }
+    }
+}

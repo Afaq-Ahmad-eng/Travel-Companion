@@ -1,0 +1,282 @@
+/* Reset (scoped inside npsw) */
+.npsw-container * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Container */
+.npsw-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Home Section */
+.npsw-home-section {
+    margin: 40px 0;
+}
+
+/* Section Title */
+.npsw-section-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1a6a3d;
+    position: relative;
+    padding-bottom: 15px;
+}
+.npsw-section-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #1a6a3d 0%, #2c9e5f 100%);
+    border-radius: 2px;
+}
+
+/* Layout */
+.npsw-home-content {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.npsw-near-places, 
+.npsw-seasonal-places {
+    flex: 1;
+    min-width: 300px;
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Sub Titles */
+.npsw-sub-title {
+    color: #1a6a3d;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8f4ec;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.npsw-sub-title i {
+    font-size: 1.5rem;
+}
+
+/* Place Items */
+.npsw-places-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.npsw-place-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+}
+.npsw-place-item.hidden {
+    display: none;
+}
+.npsw-place-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: #e8f4ec;
+}
+
+.npsw-place-img {
+    width: 150px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.npsw-place-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.npsw-place-item:hover .npsw-place-img img {
+    transform: scale(1.1);
+}
+
+.npsw-place-info {
+    flex: 1;
+}
+.npsw-place-info h3 {
+    color: #1a6a3d;
+    margin-bottom: 5px;
+}
+.npsw-place-info p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+/* Place Meta */
+.npsw-place-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #777;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.npsw-rating {
+    color: #ffc107;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.npsw-distance {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #1a6a3d;
+}
+
+/* Car Info */
+.npsw-car-info {
+    background: #e8f4ec;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+}
+.npsw-car-info-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+    color: #1a6a3d;
+    font-weight: 600;
+}
+.npsw-car-type {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 3px;
+}
+.npsw-road-condition {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.npsw-road-good { color: #2ecc71; }
+.npsw-road-fair { color: #f39c12; }
+.npsw-road-poor { color: #e74c3c; }
+
+/* Seasonal Tabs */
+.npsw-seasonal-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-radius: 30px;
+    background: #e8f4ec;
+    overflow: hidden;
+}
+.npsw-season-tab {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #1a6a3d;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.npsw-season-tab.npsw-active {
+    background: linear-gradient(135deg, #1a6a3d 0%, #2c9e5f 100%);
+    color: white;
+}
+.npsw-season-content { display: none; }
+.npsw-season-content.npsw-active { display: block; }
+
+/* Buttons */
+.npsw-see-more-btn {
+    background: linear-gradient(135deg, #1a6a3d 0%, #2c9e5f 100%);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(26, 106, 61, 0.25);
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    width: 65%;
+    justify-content: center;
+}
+.npsw-see-more-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(26, 106, 61, 0.35);
+}
+
+/* Travel Tips */
+.npsw-travel-tips {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 40px 0;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+.npsw-tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.npsw-tip-card {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.npsw-tip-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+.npsw-tip-icon {
+    font-size: 2rem;
+    color: #1a6a3d;
+    margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .npsw-home-content 
+    { flex-direction: column; }
+    .npsw-place-item
+     { flex-direction: column; }
+    .npsw-place-img 
+    { width: 100%; height: 150px; }
+    .npsw-seasonal-tabs 
+    { flex-direction: column; border-radius: 12px; }
+    .npsw-tips-grid
+     { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .npsw-section-title { font-size: 1.5rem; }
+    .npsw-place-info h3 { font-size: 1.2rem; }
+    .npsw-seasonal-tabs { flex-direction: column; }
+    .npsw-season-tab { width: 100%; margin: 5px 0; }
+}

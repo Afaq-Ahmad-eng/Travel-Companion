@@ -1,0 +1,140 @@
+.auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 10px;
+  box-sizing: border-box;
+  backdrop-filter: blur(3px);
+}
+
+.auth-modal {
+  background: #fff;
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 12px;
+  position: relative;
+  animation: popIn 0.3s ease-in-out;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+/* Close button */
+.auth-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1.8rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #333;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.auth-close:hover {
+  transform: scale(1.1);
+  color: #000;
+}
+
+/* Form input */
+.auth-form input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.auth-form input:focus {
+  border-color: #0bab50;
+  outline: none;
+}
+
+/* Submit Button */
+.auth-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #0bab50;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.auth-btn:hover {
+  background-color: #0a9445;
+  transform: translateY(-2px);
+}
+
+/* Toggle text */
+.auth-toggle {
+  margin-top: 15px;
+  text-align: center;
+  color: #0bab50;
+  cursor: pointer;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.auth-toggle:hover {
+  color: #08763b;
+  text-decoration: underline;
+}
+
+/* Entry animation */
+@keyframes popIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ✅ Responsive: Mobile styles */
+@media (max-width: 480px) {
+  .auth-modal {
+    padding: 1.5rem 1rem;
+    border-radius: 10px;
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .auth-close {
+    font-size: 1.6rem;
+    top: 8px;
+    right: 10px;
+  }
+
+  .auth-form input {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  .auth-btn {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  .auth-toggle {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+}

@@ -1,0 +1,355 @@
+/* ================ */
+/* BASE HERO STYLES */
+/* ================ */
+
+/* Full-screen hero section with centered content and background image */
+.hero {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Background image setup for hero */
+.hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1; /* Push image behind content */
+}
+
+/* ================================ */
+/* Hero section styling for Contact Us page */
+/* ================================ */
+
+/* Default image height for desktop view */
+.contact-hero img {
+  
+  width: 100%;
+  height: 90vh;
+  
+  
+}
+
+/* Adjust image height for tablets */
+@media screen and (max-width: 768px) {
+  .contact-hero img {
+    height: 250px;
+  }
+}
+
+/* Adjust image height for phones */
+@media screen and (max-width: 480px) {
+  .contact-hero img {
+    height: 200px;
+  }
+}
+
+
+/* Hero Text Content Styles */
+
+
+/* Positioning and styling the text block inside hero */
+.herotext {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 800px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Hero main heading */
+.herotext h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: white;
+}
+
+/* Hero subheading/paragraph */
+.herotext p {
+  font-size: 1.3rem;
+  color: #fff;
+  padding: 0.5rem 0 2rem 0;
+}
+
+
+/* main Button ka  STYLE */
+
+
+/* Button inside hero section */
+.herotext .show {
+  text-decoration: none;
+  background-color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: black;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for main button */
+.herotext .show:hover {
+  background-color: rgba(30, 144, 182, 0.8);
+}
+
+
+
+
+
+/* SERVICE HERO page ka STYLE*/
+
+/* Adjust hero text position for service page */
+.service-hero .herotext {
+  transform: translate(-50%, -110%);
+}
+
+/* Group container for main button + additional service buttons */
+.service-hero .service-button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* Gap between elements */
+}
+
+/* Layout for additional buttons under hero */
+.service-hero .additional-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 100px;
+  width: 100%;
+  margin-top: 80px;
+}
+
+
+/* TRANSPARENT BUTTON STYLES */
+
+
+/* Base style for additional frosted-glass buttons */
+.service-hero .manage-budget-button,
+.service-hero .share-experience-button {
+  position: relative;
+  padding: 18px 28px;
+  min-height: 60px;
+  border: 2px solid rgba(255, 255, 255, 0.3); /* Transparent border */
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  min-width: 320px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent */
+  backdrop-filter: blur(5px); /* Frosted glass */
+}
+
+/* Gradient background overlay (invisible until hover) */
+.service-hero .manage-budget-button::before,
+.service-hero .share-experience-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: -1;
+  transition: all 0.4s ease;
+}
+
+/* Hover effects: lift and color shift */
+.service-hero .manage-budget-button:hover,
+.service-hero .share-experience-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: rgba(34, 223, 189, 0.5);
+}
+
+/* Hover gradient for budget button */
+.service-hero .manage-budget-button:hover::before {
+  background: linear-gradient(135deg, rgba(30, 136, 229, 0.3), #0d47a14d);
+}
+
+/* Hover gradient for share button */
+.service-hero .share-experience-button:hover::before {
+  background: linear-gradient(135deg, rgba(66, 165, 245, 0.3), rgba(21, 101, 192, 0.3));
+}
+
+/* Add spacing and hover motion to icons inside buttons */
+.service-hero .additional-buttons i {
+  margin-right: 10px;
+  transition: transform 0.3s ease;
+}
+
+.service-hero .additional-buttons button:hover i {
+  transform: translateX(5px); /* Move icon slightly on hover */
+}
+
+
+
+
+/* MID HERO STYLES (ABOUT PAGE) */
+
+
+/* Smaller hero section used in inner pages like About */
+.hero-mid {
+  width: 100%;
+  height: 70vh;
+  position: relative;
+}
+
+.hero-mid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Hide text and button for mid-hero */
+.hero-mid .herotext p,
+.hero-mid .herotext a {
+  display: none;
+}
+
+/* ====================== */
+/* RESPONSIVE STYLES */
+/* ====================== */
+
+/* Tablet styles */
+@media screen and (max-width: 768px) {
+  .hero {
+    height: 80vh;
+  }
+
+  /* Adjust service hero text positioning */
+  .service-hero .herotext {
+    transform: translate(-50%, -55%);
+  }
+
+  .herotext h1 {
+    font-size: 2.2rem;
+    padding: 10px;
+  }
+
+  .herotext p {
+    font-size: 1.1rem;
+    padding: 0 0 1.5rem 0;
+  }
+
+  .herotext .show {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  /* Stack additional buttons vertically on smaller screens */
+  .service-hero .additional-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .service-hero .manage-budget-button,
+  .service-hero .share-experience-button {
+    width: 100%;
+    max-width: 250px;
+    min-height: 55px;
+    padding: 16px 28px;
+  }
+
+  .hero-mid {
+    height: 60vh;
+  }
+}
+
+/* Slightly smaller screens */
+@media screen and (max-width: 555px) {
+  .hero-mid {
+    height: 50vh;
+  }
+}
+
+/* Phone screens */
+@media screen and (max-width: 480px) {
+  .hero {
+    height: 70vh;
+  }
+
+  .herotext h1 {
+    font-size: 1.8rem;
+  }
+
+  .herotext p {
+    font-size: 1rem;
+  }
+
+  .herotext .show {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .service-hero .manage-budget-button,
+  .service-hero .share-experience-button {
+    min-height: 50px;
+    padding: 14px 20px;
+  }
+}
+
+/* translation button css */
+.service-hero .translation-button {
+  position: relative;
+  padding: 18px 28px;
+  min-height: 60px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  min-width: 320px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.service-hero .translation-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: rgba(240, 239, 232, 0.5);
+}
+
+.service-hero .translation-button:hover::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(30, 136, 229, 0.3), rgba(21, 101, 192, 0.3));
+  z-index: -1;
+  border-radius: inherit;
+}
+
+
