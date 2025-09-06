@@ -68,6 +68,7 @@
   margin-bottom: 1.8rem;
   font-size: 2.2rem;
   background: linear-gradient(to right, #0b0b0c, #070808);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
@@ -103,6 +104,14 @@
   outline: none;
   border-color: #00c6ff;
   box-shadow: 0 0 0 4px rgba(0, 198, 255, 0.2);
+}
+
+/* Required fields styling */
+
+.required-field{
+  color: red;
+  font-weight: bolder;
+  font-size: 1.5rem;
 }
 
 /* 💫 Star Rating */
@@ -148,6 +157,11 @@
   gap: 1rem;
 }
 
+/* we use styling for the text which we use in the validation to bold for clearly visibal */
+.error{
+  font-weight: bold;
+  color: rgb(203, 21, 21);
+}
 /* 🔙 Back Button */
 .back-button {
   padding: 10px 20px;
