@@ -1,59 +1,33 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaStar, FaRegStar } from 'react-icons/fa';
-import './ExperienceForm.css';
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft, FaStar, FaRegStar } from "react-icons/fa";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { validSchema } from "./ExperienceFormValidator";
+import "./ExperienceForm.css";
 
 const ExperienceForm = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    blog: '',
+
+  const initialValues = {
+    title: "",
+    description: "",
+    blog: "",
+    rating: 0,
     images: [],
-    rating: 0
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
   };
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 20) {
-      alert("Please upload no more than 20 images.");
-      return;
-    }
-    setFormData(prev => ({
-      ...prev,
-      images: files
-    }));
-  };
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    console.log("Submitting form with values:", values); // Only logs on submit
 
-  const handleRating = (rating) => {
-    setFormData(prev => ({
-      ...prev,
-      rating
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      alert('Experience submitted successfully!');
-      navigate('/services');
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate API
+      alert("Experience submitted successfully!");
+      resetForm();
+      navigate("/services");
     } catch (error) {
-      console.error('Submission error:', error);
-      alert('Failed to submit experience. Please try again.');
+      console.error("Submission error:", error);
+      alert("Failed to submit experience. Please try again.");
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
@@ -62,104 +36,153 @@ const ExperienceForm = () => {
       className="experience-bg-wrapper"
       style={{
         backgroundImage: 'url("/budget2-bg.jpg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '100vh',
-        padding: '2rem',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        backgroundRepeat: 'no-repeat',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        padding: "2rem",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div className="experience-form-container">
-        <form className="experience-form" onSubmit={handleSubmit}>
-          <h2>Share Your Trip Experience</h2>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validSchema}
+          onSubmit={handleSubmit}
+          validateOnMount={true} 
+        >
+          {({ values, setFieldValue, isSubmitting, errors , touched, setTouched}) => {
+            console.log(`Formik Errors `, errors);
+            
+          console.log(`Title ${values.title} Description ${values.description} and isSubmitting ${isSubmitting}`); 
+          
+            return (
+              <Form className="experience-form">
+              <h2>Share Your Trip Experience</h2>
 
-          <div className="form-group">
-            <label htmlFor="title">Trip Title</label>
-            <input
-              id="title"
-              name="title"
-              type="text"
-              placeholder="Enter trip title(Trip to kalam)..."
-              value={formData.title}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
+              {/* Title Field*/}
+              <div className="form-group">
+                <label htmlFor="title">  Trip Title <span className="required-field">*</span></label>
+                <Field
+                  id="title"
+                  name="title"
+                  type="text"
+                  placeholder="Enter trip title (Trip to Kalam)..."
+                />
+                <ErrorMessage
+                  name="title"
+                  component="div"
+                  className="error"
+                />
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              name="description"
-              rows="3"
-              placeholder="Short description of the trip"
-              value={formData.description}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
+              {/* Description Filed */}
+              <div className="form-group">
+                <label htmlFor="description">Description <span className="required-field">*</span></label>
+                <Field
+                  as="textarea"
+                  id="description"
+                  name="description"
+                  rows="3"
+                  placeholder="Short description of the trip"
+                />
+                <ErrorMessage
+                  name="description"
+                  component="div"
+                  className="error"
+                />
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="blog">Trip Blog (10–20 lines)</label>
-            <textarea
-              id="blog"
-              name="blog"
-              rows="15"
-              placeholder="Share your full trip story..."
-              value={formData.blog}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
+              {/* Blog Field*/}
+              <div className="form-group">
+                <label htmlFor="blog">Trip Blog (10–20 lines)</label>
+                <Field
+                  as="textarea"
+                  id="blog"
+                  name="blog"
+                  rows="15"
+                  placeholder="Share your full trip story..."
+                />
+                <ErrorMessage
+                  name="blog"
+                  component="div"
+                  className="error"
+                />
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="images">Upload Photos (10–20)</label>
-            <input
-              id="images"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              required
-            />
-            <small>{formData.images.length} images selected</small>
-          </div>
+              {/* Images Field */}
+              <div className="form-group">
+                <label htmlFor="images">Upload Photos (10–20) <span className="required-field">*</span></label>
+                <input
+                  id="images"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files);
+                    if (files.length > 20) {
+                      alert("Please upload no more than 20 images.");
+                      return;
+                    }
+                    setFieldValue("images", files);
+                  }}
+                />
+                <small>{values.images.length} images selected</small>
+                <ErrorMessage
+                  name="images"
+                  component="div"
+                  className="error"
+                />
+              </div>
 
-          <div className="form-group">
-            <label>Rate Your Experience</label>
-            <div className="stars">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <span
-                  key={star}
-                  className={star <= formData.rating ? 'filled' : ''}
-                  onClick={() => handleRating(star)}
+              {/* Rating Filed */}
+              <div className="form-group">
+                <label>Rate Your Experience <span className="required-field">*</span></label>
+                <div className="stars">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      className={star <= values.rating ? "filled" : ""}
+                      onClick={() => setFieldValue("rating", star)}
+                    >
+                      {star <= values.rating ? <FaStar /> : <FaRegStar />}
+                    </span>
+                  ))}
+                </div>
+                <ErrorMessage
+                  name="rating"
+                  component="div"
+                  className="error"
+                />
+              </div>
+
+              {/* Submit */}
+              <div className="form-actions">
+                <button
+                  type="submit"
+                  className="submit-button"
+                  disabled={isSubmitting}
+                   onClick={() => setTouched({
+          title: true,
+          description: true,
+          images: true,
+          rating: true,
+        })}
                 >
-                  {star <= formData.rating ? <FaStar /> : <FaRegStar />}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="form-actions">
-            <button 
-              type="submit" 
-              className="submit-button"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Experience'}
-            </button>
-          </div>
-        </form>
+                  {isSubmitting ? "Submitting..." : "Submit Experience"}
+                </button>
+              </div>
+            </Form>
+          )}}
+        </Formik>
 
         <div className="back-container">
-          <button 
+          <button
             type="button"
             className="back-button"
-            onClick={() => navigate('/services')}
-            disabled={isSubmitting}
+            onClick={() => navigate("/services")}
           >
             <FaArrowLeft /> Back to Services
           </button>
