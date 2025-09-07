@@ -95,6 +95,12 @@
   color: #08763b;
   text-decoration: underline;
 }
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
 
 /* Entry animation */
 @keyframes popIn {
