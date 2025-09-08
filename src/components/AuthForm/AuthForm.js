@@ -15,6 +15,9 @@ const AuthForm = ({ onClose }) => {
   const handleSubmit = (values, { resetForm }) => {
     const { username, email, password } = values;
 
+    console.log(`User name is ${username} Email is ${email} Password is ${password}`);
+    
+
     if (!password || (!isLogin && (!username || !email))) {
       alert("Please fill in all required fields.");
       return;
@@ -31,8 +34,19 @@ const AuthForm = ({ onClose }) => {
       <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
         <button className="auth-close" onClick={onClose}>×</button>
         <Formik
+          //We are passing initialValues to the Formik component
           initialValues={initialValues}
-          validationSchema={validSchema}
+
+          //We are passing isLogin to the validSchema function to get the correct schema
+          validationSchema={validSchema(isLogin)}
+
+          //We are enabling validation on change and blur events
+          validateOnChange={true}
+
+          // We are enabling validation on blur events
+          validateOnBlur={true}
+          
+          //We are passing handleSubmit function to the onSubmit prop
           onSubmit={handleSubmit}
         >
           {({ handleSubmit }) => (
@@ -48,7 +62,6 @@ const AuthForm = ({ onClose }) => {
                     className="auth-input"
                   />
                   <ErrorMessage name="username" component="div" className="error" />
-
                   <Field
                     name="email"
                     type="email"
@@ -70,7 +83,6 @@ const AuthForm = ({ onClose }) => {
                   <ErrorMessage name="email" component="div" className="error" />
                 </>
               )}
-
               <Field
                 name="password"
                 type="password"
