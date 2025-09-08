@@ -102,12 +102,6 @@
   margin-bottom: 8px;
 }
 
-.required-field{
-  color: red;
-  font-size: 0.8rem;
-  display: flex;
-  justify-content: start;
-}
 
 /* Entry animation */
 @keyframes popIn {
