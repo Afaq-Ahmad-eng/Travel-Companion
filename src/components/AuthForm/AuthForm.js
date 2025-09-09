@@ -8,14 +8,15 @@ const initialValues = {
   username: "",
   email: "",
   password: "",
+  phoneNumber: "",
 };
 const AuthForm = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(false); // false = Register
 
   const handleSubmit = (values, { resetForm }) => {
-    const { username, email, password } = values;
+    const { username, email, password, phoneNumber } = values;
 
-    console.log(`User name is ${username} Email is ${email} Password is ${password}`);
+    console.log(`User name is ${username} Email is ${email} Password is ${password} Phone Number is ${phoneNumber}`);
     
 
     if (!password || (!isLogin && (!username || !email))) {
@@ -49,7 +50,7 @@ const AuthForm = ({ onClose }) => {
           //We are passing handleSubmit function to the onSubmit prop
           onSubmit={handleSubmit}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, errors,touched ,handleChange, setFieldTouched }) => (
             <form onSubmit={handleSubmit} className="auth-form">
               <h2>{isLogin ? "Login" : "Register"}</h2>
 
@@ -58,8 +59,12 @@ const AuthForm = ({ onClose }) => {
                   <Field
                     name="username"
                     type="text"
-                    placeholder="Username"
+                    placeholder="Enter your full name"
                     className="auth-input"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("username", true, false);
+                    }}
                   />
                   <ErrorMessage name="username" component="div" className="error" />
                   <Field
@@ -67,8 +72,23 @@ const AuthForm = ({ onClose }) => {
                     type="email"
                     placeholder="Email"
                     className="auth-input"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("email", true, false);
+                    }}
                   />
                   <ErrorMessage name="email" component="div" className="error" />
+                  <Field
+                    name="phoneNumber"
+                    type="text"
+                    placeholder="Phone Number  (e.g., +929876543210)"
+                    className="auth-input"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("phoneNumber", true, false);
+                    }}
+                  />
+                  <ErrorMessage name="phoneNumber" component="div" className="error" />
                 </>
               )}
 
@@ -79,6 +99,10 @@ const AuthForm = ({ onClose }) => {
                     type="email"
                     placeholder="Email"
                     className="auth-input"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("email", true, false);
+                    }}
                   />
                   <ErrorMessage name="email" component="div" className="error" />
                 </>
@@ -88,6 +112,10 @@ const AuthForm = ({ onClose }) => {
                 type="password"
                 placeholder="Password"
                 className="auth-input"
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldTouched("password", true, false);
+                }}
               />
               <ErrorMessage name="password" component="div" className="error" />
 
