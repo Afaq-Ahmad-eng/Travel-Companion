@@ -1,7 +1,42 @@
 import { useState } from "react";
 import { Formik, Field, ErrorMessage } from "formik";
 import { validSchema } from "./AuthFormValidator";
+import CryptoJS from "crypto-js";
+
 import "./AuthForm.css";
+
+//Secret key for AES encryption
+const SECRET_KEY= "642c4e496cfa2dd0112023f0cb9902a3cfc91e544b84718d6010bf65ef37d701"
+
+//Function to encrypt password using AES encryption
+const encryptPassword = (encryptedData) => {
+  const secretKey = SECRET_KEY;
+  return CryptoJS.AES.encrypt(encryptedData, secretKey).toString();
+};
+
+//endpoint URLs
+const endpoints =  "http://localhost:3001/user/auth/register" ;
+//Function which we use to send data to the backend server
+const sendDataToServer = async (endpoint, { username, email, password, phoneNumber }) => {
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email, password, phoneNumber }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const result = await response.json();
+    console.log("Data sent successfully:", result);
+  } catch (error) {
+    console.error("Error sending data:", error);
+  }
+};
 
 // Initial values for Formik
 const initialValues = {
@@ -16,8 +51,20 @@ const AuthForm = ({ onClose }) => {
   const handleSubmit = (values, { resetForm }) => {
     const { username, email, password, phoneNumber } = values;
 
-    console.log(`User name is ${username} Email is ${email} Password is ${password} Phone Number is ${phoneNumber}`);
-    
+    //Username encrypted
+    const encryptedUsername = encryptPassword(username);
+
+    //Email encrypted
+    const encryptedEmail = encryptPassword(email);
+
+    //Password encrypted
+     const encryptedPassword = encryptPassword(password);
+
+     //Phone number encrypted
+    const encryptedPhoneNumber = encryptPassword(phoneNumber);
+
+    console.log(`We have on the frontend User name is ${encryptedUsername} Email is ${encryptedEmail} Password is ${encryptedPassword} Phone Number is ${encryptedPhoneNumber}`);
+
 
     if (!password || (!isLogin && (!username || !email))) {
       alert("Please fill in all required fields.");
@@ -25,7 +72,8 @@ const AuthForm = ({ onClose }) => {
     }
 
     alert(`${isLogin ? "Login" : "Registration"} successful!`);
-    console.log("Form Data:", values);
+    sendDataToServer(endpoints, { username: encryptedUsername, email: encryptedEmail, password: encryptedPassword, phoneNumber: encryptedPhoneNumber });
+
     resetForm();
     onClose();
   };
