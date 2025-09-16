@@ -1,42 +1,12 @@
 import { useState } from "react";
 import { Formik, Field, ErrorMessage } from "formik";
 import { validSchema } from "./AuthFormValidator";
-import CryptoJS from "crypto-js";
-
+import { encryptData } from "../../utils/secure";
+import { sendDataToServer } from "../../utils/api";
 import "./AuthForm.css";
 
-//Secret key for AES encryption
-const SECRET_KEY= "642c4e496cfa2dd0112023f0cb9902a3cfc91e544b84718d6010bf65ef37d701"
-
-//Function to encrypt password using AES encryption
-const encryptPassword = (encryptedData) => {
-  const secretKey = SECRET_KEY;
-  return CryptoJS.AES.encrypt(encryptedData, secretKey).toString();
-};
-
 //endpoint URLs
-const endpoints =  "http://localhost:3001/user/auth/register" ;
-//Function which we use to send data to the backend server
-const sendDataToServer = async (endpoint, { username, email, password, phoneNumber }) => {
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, email, password, phoneNumber }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const result = await response.json();
-    console.log("Data sent successfully:", result);
-  } catch (error) {
-    console.error("Error sending data:", error);
-  }
-};
+const endpoint = "http://localhost:3001/auth/register"; // Registration endpoint
 
 // Initial values for Formik
 const initialValues = {
@@ -48,57 +18,67 @@ const initialValues = {
 const AuthForm = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(false); // false = Register
 
-  const handleSubmit = (values, { resetForm }) => {
-    const { username, email, password, phoneNumber } = values;
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      // Send data to server
+      const loginOrRegister = isLogin ? "Login" : "Register";
+      console.log(`Login or Register: ${loginOrRegister}`);
+      if (isLogin) {
+        
+      } else {
+        const { username, email, password, phoneNumber } = values;
 
-    //Username encrypted
-    const encryptedUsername = encryptPassword(username);
+        //Username encrypted
+        const encryptedUsername = encryptData(username);
 
-    //Email encrypted
-    const encryptedEmail = encryptPassword(email);
+        //Email encrypted
+        const encryptedEmail = encryptData(email);
 
-    //Password encrypted
-     const encryptedPassword = encryptPassword(password);
+        //Password encrypted
+        const encryptedPassword = encryptData(password);
 
-     //Phone number encrypted
-    const encryptedPhoneNumber = encryptPassword(phoneNumber);
+        //Phone number encrypted
+        const encryptedPhoneNumber = encryptData(phoneNumber);
 
-    console.log(`We have on the frontend User name is ${encryptedUsername} Email is ${encryptedEmail} Password is ${encryptedPassword} Phone Number is ${encryptedPhoneNumber}`);
+        const userData = {
+          username: encryptedUsername,
+          email: encryptedEmail,
+          password: encryptedPassword,
+          phoneNumber: encryptedPhoneNumber,
+        };
 
+        await sendDataToServer(endpoint, userData);
+        alert(`${isLogin ? "Login" : "Registration"} successful!`);
 
-    if (!password || (!isLogin && (!username || !email))) {
-      alert("Please fill in all required fields.");
-      return;
+        resetForm();
+        onClose();
+      }
+    } catch (error) {
+      alert(
+        `This Error come from sending data to server function: ${error.message}`
+      );
     }
-
-    alert(`${isLogin ? "Login" : "Registration"} successful!`);
-    sendDataToServer(endpoints, { username: encryptedUsername, email: encryptedEmail, password: encryptedPassword, phoneNumber: encryptedPhoneNumber });
-
-    resetForm();
-    onClose();
   };
 
   return (
     <div className="auth-overlay" onClick={onClose}>
       <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="auth-close" onClick={onClose}>×</button>
+        <button className="auth-close" onClick={onClose}>
+          ×
+        </button>
         <Formik
           //We are passing initialValues to the Formik component
           initialValues={initialValues}
-
           //We are passing isLogin to the validSchema function to get the correct schema
           validationSchema={validSchema(isLogin)}
-
           //We are enabling validation on change and blur events
           validateOnChange={true}
-
           // We are enabling validation on blur events
           validateOnBlur={true}
-          
           //We are passing handleSubmit function to the onSubmit prop
           onSubmit={handleSubmit}
         >
-          {({ handleSubmit, errors,touched ,handleChange, setFieldTouched }) => (
+          {({ handleSubmit, handleChange, setFieldTouched }) => (
             <form onSubmit={handleSubmit} className="auth-form">
               <h2>{isLogin ? "Login" : "Register"}</h2>
 
@@ -114,7 +94,11 @@ const AuthForm = ({ onClose }) => {
                       setFieldTouched("username", true, false);
                     }}
                   />
-                  <ErrorMessage name="username" component="div" className="error" />
+                  <ErrorMessage
+                    name="username"
+                    component="div"
+                    className="error"
+                  />
                   <Field
                     name="email"
                     type="email"
@@ -125,7 +109,11 @@ const AuthForm = ({ onClose }) => {
                       setFieldTouched("email", true, false);
                     }}
                   />
-                  <ErrorMessage name="email" component="div" className="error" />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="error"
+                  />
                   <Field
                     name="phoneNumber"
                     type="text"
@@ -136,7 +124,11 @@ const AuthForm = ({ onClose }) => {
                       setFieldTouched("phoneNumber", true, false);
                     }}
                   />
-                  <ErrorMessage name="phoneNumber" component="div" className="error" />
+                  <ErrorMessage
+                    name="phoneNumber"
+                    component="div"
+                    className="error"
+                  />
                 </>
               )}
 
@@ -152,7 +144,11 @@ const AuthForm = ({ onClose }) => {
                       setFieldTouched("email", true, false);
                     }}
                   />
-                  <ErrorMessage name="email" component="div" className="error" />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="error"
+                  />
                 </>
               )}
               <Field
