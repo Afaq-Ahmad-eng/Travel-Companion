@@ -6,6 +6,7 @@ import { sendDataToServer } from "../../utils/api";
 import "./AuthForm.css";
 
 //endpoint URLs
+
 const endpoint = "http://localhost:3001/auth/register"; // Registration endpoint
 
 // Initial values for Formik
