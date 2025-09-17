@@ -19,7 +19,7 @@ const AuthForm = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(false); // false = Register
 
   const handleSubmit = async (values, { resetForm }) => {
-    try {
+    
       // Send data to server
       const loginOrRegister = isLogin ? "Login" : "Register";
       console.log(`Login or Register: ${loginOrRegister}`);
@@ -47,13 +47,14 @@ const AuthForm = ({ onClose }) => {
           phoneNumber: encryptedPhoneNumber,
         };
 
+        try {
+
         await sendDataToServer(endpoint, userData);
         alert(`${isLogin ? "Login" : "Registration"} successful!`);
 
         resetForm();
         onClose();
-      }
-    } catch (error) {
+      }catch (error) {
       alert(
         `This Error come from sending data to server function: ${error.message}`
       );
@@ -178,6 +179,6 @@ const AuthForm = ({ onClose }) => {
       </div>
     </div>
   );
-};
+}};
 
 export default AuthForm;
