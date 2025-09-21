@@ -98,8 +98,7 @@
 .error {
   color: red;
   font-size: 0.9rem;
-  margin-top: -8px;
-  margin-bottom: 8px;
+  font-size: bold;
 }
 
 
