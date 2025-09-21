@@ -1,9 +1,11 @@
 import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
 import { Formik, Field, ErrorMessage } from "formik";
 import { validSchema } from "./AuthFormValidator";
 import { encryptData } from "../../utils/secure";
 import { sendDataToServer } from "../../utils/api";
 import "./AuthForm.css";
+import Swal from "sweetalert2";
 
 //endpoint URLs
 
@@ -17,48 +19,49 @@ const initialValues = {
   phoneNumber: "",
 };
 const AuthForm = ({ onClose }) => {
+  // const naivgator = useNavigate();
   const [isLogin, setIsLogin] = useState(false); // false = Register
 
-  const handleSubmit = async (values, { resetForm }) => {
-    
-      // Send data to server
-      const loginOrRegister = isLogin ? "Login" : "Register";
-      console.log(`Login or Register: ${loginOrRegister}`);
-      if (isLogin) {
+  const onSubmitForm = async (values, { resetForm }) => {
+    // Send data to server
+    if (isLogin) {
+    } else {
+      const { username, email, password, phoneNumber } = values;
+
+      //Encrypt the Data
+      const userData = {
+        username: encryptData(username),
+        email: encryptData(email),
+        password: encryptData(password),
+        phoneNumber: encryptData(phoneNumber),
+      };
+      try {
+        const response = await sendDataToServer(endpoint, userData);
+        console.log("We are at frontend AuthForm",response);
         
-      } else {
-        const { username, email, password, phoneNumber } = values;
+        const MsgForSuccessfulCompletion = `${isLogin ? "Login" : "Registration"} successful!`;
 
-        //Username encrypted
-        const encryptedUsername = encryptData(username);
-
-        //Email encrypted
-        const encryptedEmail = encryptData(email);
-
-        //Password encrypted
-        const encryptedPassword = encryptData(password);
-
-        //Phone number encrypted
-        const encryptedPhoneNumber = encryptData(phoneNumber);
-
-        const userData = {
-          username: encryptedUsername,
-          email: encryptedEmail,
-          password: encryptedPassword,
-          phoneNumber: encryptedPhoneNumber,
-        };
-
-        try {
-
-        await sendDataToServer(endpoint, userData);
-        alert(`${isLogin ? "Login" : "Registration"} successful!`);
-
+          Swal.fire({
+            title: `User ${MsgForSuccessfulCompletion}`,
+            text: `Dear ${response.data.response.username} ${response.data.message}`,
+            icon: "success",
+            timer: 3000,
+            showConfirmButton: true,
+          });
         resetForm();
         onClose();
-      }catch (error) {
-      alert(
-        `This Error come from sending data to server function: ${error.message}`
-      );
+      } catch (error) {
+        onClose();
+        Swal.fire({
+          title: `${isLogin ? "Login" : "Registration"} is Failed`,
+          text:  error.response.data.message,
+          icon: "error",
+          confirmButtonText: "Click here to continue",
+          showConfirmButton: true,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+        });
+      }
     }
   };
 
@@ -78,7 +81,7 @@ const AuthForm = ({ onClose }) => {
           // We are enabling validation on blur events
           validateOnBlur={true}
           //We are passing handleSubmit function to the onSubmit prop
-          onSubmit={handleSubmit}
+          onSubmit={onSubmitForm}
         >
           {({ handleSubmit, handleChange, setFieldTouched }) => (
             <form onSubmit={handleSubmit} className="auth-form">
@@ -180,6 +183,6 @@ const AuthForm = ({ onClose }) => {
       </div>
     </div>
   );
-}};
+};
 
 export default AuthForm;
