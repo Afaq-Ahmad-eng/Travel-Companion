@@ -1,17 +1,19 @@
-// External library ASE using for decryption
+//We have the encryptData and decryptData functions in both the server (backend) folder and the travel-companion (frontend) folder, but this is not the recommended way.
+
+//External library for AES encryption
 import CryptoJS from "crypto-js";
 
-import dotenv from "dotenv";
-dotenv.config();
+//Secret key for AES encryption
+const SECRET_KEY= "642c4e496cfa2dd0112023f0cb9902a3cfc91e544b84718d6010bf65ef37d701"
 
-//Decrypting the encrypted data (coming from frontend) using AES decryption 
+//Function to encrypt password using AES encryption
+export const encryptData = (plainData) => {
+  const secretKey = SECRET_KEY;
+  return CryptoJS.AES.encrypt(plainData, secretKey).toString();
+};
+
+//Function to decrypt data
 export const decryptData = (encryptedData) => {
-  const bytes = CryptoJS.AES.decrypt(encryptedData, process.env.ENCRYPTION_AND_DECRYPTION_SECRET_KEY);
+  const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
   return bytes.toString(CryptoJS.enc.Utf8);
 }
-
-//Encrypting the plain phoneno using AES encryption
-export const encryptData = (plainPhoneNo ) => {
-  const secretKey = process.env.ENCRYPTION_AND_DECRYPTION_SECRET_KEY;
-  return CryptoJS.AES.encrypt(plainPhoneNo, secretKey).toString();
-};
