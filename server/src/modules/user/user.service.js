@@ -2,7 +2,6 @@
 import prisma from "../../config/database.js";
 
 export const createUsers = async (data) => {
-  console.log("this data is come from createUser function : ", data);
 
   try {
     const user = await prisma.user.create({
@@ -13,11 +12,27 @@ export const createUsers = async (data) => {
         user_password: data.user_password
       }
     });
-    console.log("this data is come from createUser function using prisma : ", user);
     return user;
   } catch (err) {
-    console.error("Prisma error:", err.message);
-    throw err;
+  
+  if (err.code === "P2002") {
+    if(err.meta.target === "user_name"){
+      throw {
+        status: 409,
+        message: `Dear user your name ${data.user_name} is already in use. Please enter a different one.`
+      }
+    }else if(err.meta.target === "user_email"){
+       throw {
+        status: 409,
+        message: `Dear user your email ${data.user_email} is already in use. Please enter a different one.`
+      }
+    }
+    }else{
+       throw {
+        status: 500,
+        message: "Something went wrong while creating the user"
+      }
+    }
   }
 };
 
