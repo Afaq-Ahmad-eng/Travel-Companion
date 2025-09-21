@@ -159,8 +159,13 @@
 
 /* we use styling for the text which we use in the validation to bold for clearly visibal */
 .error{
+
+  /* color: red;
+  font-size: 0.9rem;
+  font-size: bold; */
   font-weight: bold;
   color: rgb(203, 21, 21);
+  margin-top: 5px;
 }
 /* 🔙 Back Button */
 .back-button {
