@@ -4,11 +4,10 @@ import axios from "axios";
 export const sendDataToServer = async (endpoint, payload) => {
   try {
     // Send POST request to the server
-    await axios.post(endpoint, payload);
-
+      const response = await axios.post(endpoint, payload);
+      return response;
   } catch (error) {
-    alert("Error sending data:", error.response?.data || error.message);
-    throw error; 
+   throw error; 
   }
 };
 
