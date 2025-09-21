@@ -7,10 +7,6 @@ import { sendDataToServer } from "../../utils/api";
 import "./AuthForm.css";
 import Swal from "sweetalert2";
 
-//endpoint URLs
-
-const endpoint = "http://localhost:3001/auth/register"; // Registration endpoint
-
 // Initial values for Formik
 const initialValues = {
   username: "",
