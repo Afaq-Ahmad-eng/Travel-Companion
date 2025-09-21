@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import { Menuitems } from './Menuitems';
 import { FaUserPlus } from 'react-icons/fa';
-import AuthForm from '../AuthForm/AuthForm'; // ✅ Make sure path is correct
+import AuthForm from '../AuthForm/AuthForm'; 
 
 export default function Navbar() {
   const [clicked, setClicked] = useState(false);
