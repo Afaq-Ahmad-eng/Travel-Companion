@@ -2,7 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaStar, FaRegStar } from "react-icons/fa";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { validSchema } from "./ExperienceFormValidator";
+// import { encryptData } from "../../utils/secure";
+import { sendDataToServer } from "../../utils/api";
+import { encryptedImages } from "../../utils/secure";
 import "./ExperienceForm.css";
+
+//endpoint where we send data to the server and then to DB
+const endpoint = "http://localhost:3001/user/share-experience"
 
 const ExperienceForm = () => {
   const navigate = useNavigate();
@@ -11,12 +17,37 @@ const ExperienceForm = () => {
     title: "",
     description: "",
     blog: "",
-    rating: 0,
     images: [],
+    rating: null,
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log("Submitting form with values:", values); // Only logs on submit
+    const { title, description, blog, images, rating } = values;
+    //the data to be sent to the server after encryption
+
+    // Encrypt images before sending
+    const encryptedImgs = await encryptedImages(images);
+    console.log(`ENCRYPTED IMAGES ARE:`, encryptedImgs);
+
+     const clearImgsData = encryptedImgs.map((img) => ({
+      name: img.name,
+      type: img.type,
+      content: img.content, // encrypted gibberish
+      metadata: "data:image/png;base64,", // prefix (can be useful later when decoding)
+    }));
+    const Data = {
+      title,
+      description,
+      images: clearImgsData,
+      blog,
+      rating,
+    };
+    
+    console.log(`Encrypted IMAGES ARE:`, images);
+
+    
+        await sendDataToServer(endpoint,Data);
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate API
@@ -51,15 +82,17 @@ const ExperienceForm = () => {
           initialValues={initialValues}
           validationSchema={validSchema}
           onSubmit={handleSubmit}
-          validateOnMount={true}
+          validateOnMount={false}
+          // validateOnBlur={true}
+          // validateOnChange={false}
         >
           {({
             values,
             setFieldValue,
             isSubmitting,
+            handleChange,
             errors,
-            touched,
-            setTouched,
+            setFieldTouched,
           }) => {
             console.log(`Formik Errors `, errors);
 
@@ -74,7 +107,6 @@ const ExperienceForm = () => {
                 {/* Title Field*/}
                 <div className="form-group">
                   <label htmlFor="title">
-                    {" "}
                     Trip Title <span className="required-field">*</span>
                   </label>
                   <Field
@@ -82,6 +114,10 @@ const ExperienceForm = () => {
                     name="title"
                     type="text"
                     placeholder="Enter trip title (Trip to Kalam)..."
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("title", true, false);
+                    }}
                   />
                   <ErrorMessage
                     name="title"
@@ -101,6 +137,10 @@ const ExperienceForm = () => {
                     name="description"
                     rows="3"
                     placeholder="Short description of the trip"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("description", true, false);
+                    }}
                   />
                   <ErrorMessage
                     name="description"
@@ -118,6 +158,10 @@ const ExperienceForm = () => {
                     name="blog"
                     rows="15"
                     placeholder="Share your full trip story..."
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("title", true, false);
+                    }}
                   />
                   <ErrorMessage name="blog" component="div" className="error" />
                 </div>
@@ -153,7 +197,7 @@ const ExperienceForm = () => {
                 {/* Rating Filed */}
                 <div className="form-group">
                   <label>
-                    Rate Your Experience{" "}
+                    Rate Your Experience
                     <span className="required-field">*</span>
                   </label>
                   <div className="stars">
@@ -161,7 +205,9 @@ const ExperienceForm = () => {
                       <span
                         key={star}
                         className={star <= values.rating ? "filled" : ""}
-                        onClick={() => setFieldValue("rating", star)}
+                        onClick={() => {
+                          setFieldValue("rating", star);
+                        }}
                       >
                         {star <= values.rating ? <FaStar /> : <FaRegStar />}
                       </span>
@@ -180,14 +226,6 @@ const ExperienceForm = () => {
                     type="submit"
                     className="submit-button"
                     disabled={isSubmitting}
-                    onClick={() =>
-                      setTouched({
-                        title: true,
-                        description: true,
-                        images: true,
-                        rating: true,
-                      })
-                    }
                   >
                     {isSubmitting ? "Submitting..." : "Submit Experience"}
                   </button>
