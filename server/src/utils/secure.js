@@ -13,7 +13,18 @@ export const encryptData = (plainData) => {
 };
 
 //Function to decrypt data
-export const decryptData = (encryptedData) => {
-  const bytes = CryptoJS.AES.decrypt(encryptedData, process.env.ENCRYPTION_AND_DECRYPTION_SECRET_KEY);
-  return bytes.toString(CryptoJS.enc.Utf8);
-}
+export const decryptData = (encryptedData) => { 
+  if (!encryptedData) {
+    return null; 
+  }
+  try {
+    const bytes = CryptoJS.AES.decrypt(
+      encryptedData,
+      process.env.ENCRYPTION_AND_DECRYPTION_SECRET_KEY
+    );
+    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+    return decrypted || null;
+  } catch (err) {
+    return null;
+  }
+};
