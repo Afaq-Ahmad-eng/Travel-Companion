@@ -8,7 +8,9 @@ export const shareExperienceSchema = Joi.object({
   description: Joi.string().required().custom((value, helpers) => {
     const wordCount = countWords(value);
     if (wordCount < 10) return helpers.error("string.min");
+
     if (wordCount > 100) return helpers.error("string.max");
+    
     if (!titleDescriptionRegex.test(value)) return helpers.error("string.pattern.base");
     return value;
   }), blog: Joi.string().allow("").optional(),
