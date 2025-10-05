@@ -58,7 +58,9 @@ export const getRefreshTokenByUserId = async (userId) => {
     });
 
     return result ? result.refresh_token : null;
+    
   } catch (error) {
+
     throw new Error("Could not fetch refresh token");
   }
 };
