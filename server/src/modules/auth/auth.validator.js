@@ -7,6 +7,8 @@ export const validateRegister = (data) => {
     user_email: Joi.string().email().required(),
     user_phoneno: Joi.string().min(13).required(),
     user_password: Joi.string().min(6).required(),
+    user_interest: Joi.string().required(),
+    user_location: Joi.string().required()
   });
   return schema.validate(data);
 };
