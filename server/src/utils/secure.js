@@ -18,6 +18,7 @@ export const decryptData = (encryptedData) => {
     return null; 
   }
   try {
+    
     const bytes = CryptoJS.AES.decrypt(
       encryptedData,
       process.env.ENCRYPTION_AND_DECRYPTION_SECRET_KEY
