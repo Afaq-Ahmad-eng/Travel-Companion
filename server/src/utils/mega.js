@@ -1,7 +1,7 @@
 // src/utils/mega.js
 import { Storage } from "megajs";
 
-export const uploadToMega = async (buffer, fileName, userEmail, userPassword, folderName) => {
+export const uploadBufferToMega = async (buffer, fileName, userEmail, userPassword, folderName) => {
   try {
     // 1. Connect to MEGA
     const storage = new Storage({
