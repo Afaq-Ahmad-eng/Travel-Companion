@@ -6,6 +6,6 @@ import { shareExperience } from "./shareExperience.controller.js";
 const router = express.Router();
 
 // POST /share/   (because we'll mount router at /share)
-router.post("/experience", upload.array("images", 20), shareExperience); // set max 20 if you want
+router.post("/experience", upload.array("images", 20), shareExperience);
 
 export default router;
