@@ -1,5 +1,5 @@
 // auth.controller.js
-import { createUsers, getUserByEmail, getAllUsers,createRefreshToken } from "./auth.service.js";
+import { createUsers, getUserByEmail, createRefreshToken, updateUserUpdatedAtField } from "./auth.service.js";
 import { validateRegister, validateLogin } from "./auth.validator.js";
 import { hashPassword, verifyPassword } from "../../utils/hashing.js";
 
@@ -119,19 +119,22 @@ export const login = async (req, res) => {
   }
 
   try {
-    const user = await getUserByEmail(decncryptedData.user_email);
-    if (!user) {
+    const userFortoUpDateUserUpdatedAtField = await getUserByEmail(decncryptedData.user_email);
+    
+    if (!userFortoUpDateUserUpdatedAtField) {
       return res.status(401).json(errorStatusAndMessage);
     }
-
+    
     checkPassword = await verifyPassword(
       decncryptedData.user_password,
-      user.user_password
+     userFortoUpDateUserUpdatedAtField.user_password
     );
-
+    
     if (!checkPassword) {
       return res.status(401).json(errorStatusAndMessage);
     }
+    
+   const user = await updateUserUpdatedAtField(userFortoUpDateUserUpdatedAtField.user_id);
 
     //Setting data for jwt token
     const jwtPayload = {
@@ -160,8 +163,11 @@ export const login = async (req, res) => {
       message: "Login successful",
       user: {
         user_id: user.user_id,
-        user_email: user.user_email,
         user_name: user.user_name,
+        user_email: user.user_email,
+        user_updatedAt: user.user_updatedAt,
+        user_status: user.user_status,
+        user_role: user.user_role
       },
     });
   } catch (error) {
@@ -204,7 +210,6 @@ export const renewAccessToken = (req, res) => {
       newAccessToken,
     });
   } catch (error) {
-    console.error("Error in renewAccessToken:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
