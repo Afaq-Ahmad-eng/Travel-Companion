@@ -108,7 +108,7 @@ export default function Home() {
         title="Your Journey your story"
         text="Choose your favorite destination"
         buttontext="Travel Plan"
-        url="/budgetmanager"
+        url="/services"
         btnclass="show"
       />
       <SearchBar />
