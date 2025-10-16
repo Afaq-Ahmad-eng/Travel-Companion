@@ -1,0 +1,215 @@
+/* -------------------
+   BASE LAYOUT
+------------------- */
+.fullScreen {
+  width: 100%;
+  height: calc(100vh - 80px); /* leave room for navbar */
+  background: #ffffff;
+  padding: 2rem;
+  margin-top: 6rem; /* below navbar */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+  flex-wrap: wrap; /* responsive for smaller screens */
+}
+
+.backBtn {
+  background: #3085d6;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.backBtn:hover {
+  background: #2563eb;
+}
+
+/* -------------------
+   GALLERY WRAPPER
+------------------- */
+.galleryWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.tripSection {
+  background: #fafafa;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.tripTitle {
+  margin-bottom: 1rem;
+  color: #333;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* Responsive grid */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.imageCard {
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.image:hover {
+  transform: scale(1.05);
+}
+
+.noImages {
+  color: #777;
+  font-style: italic;
+}
+
+.noData {
+  text-align: center;
+  color: #666;
+  margin-top: 2rem;
+}
+
+/* -------------------
+   FULL IMAGE OVERLAY
+------------------- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  
+}
+
+.fullImage {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  object-fit: contain;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  margin-top: 12rem;
+  margin-bottom: 6rem;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  font-size: 30px;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.closeBtn:hover {
+  transform: scale(1.2);
+}
+
+/* -------------------
+   RESPONSIVENESS
+------------------- */
+
+/* Tablets (≤ 992px) */
+@media (max-width: 992px) {
+  .fullScreen {
+    padding: 1.5rem;
+    margin-top: 6rem;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .image {
+    height: 150px;
+  }
+
+  .tripSection {
+    padding: 0.8rem;
+  }
+
+  .tripTitle {
+    font-size: 15px;
+  }
+
+  .closeBtn {
+    top: 20px;
+    right: 25px;
+    font-size: 26px;
+  }
+}
+
+/* Mobiles (≤ 600px) */
+@media (max-width: 600px) {
+  .fullScreen {
+    padding: 1rem;
+    margin-top: 6rem;
+  }
+
+  .header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8rem;
+  }
+
+  .gallery {
+    grid-template-columns: 1fr; /* stack images */
+  }
+
+  .image {
+    height: 200px;
+  }
+
+  .tripTitle {
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .closeBtn {
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+  }
+
+  .fullImage {
+    max-width: 95%;
+    max-height: 80%;
+  }
+}

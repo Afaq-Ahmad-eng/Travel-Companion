@@ -1,0 +1,163 @@
+.container {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  background: #fff;
+  color: #444;
+  margin-top: 7em;
+  flex-wrap: wrap; /* allows stacking on smaller screens */
+}
+
+/* -------------------
+   PROFILE SECTION
+------------------- */
+.profileSection {
+  flex: 1;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  min-width: 280px; /* prevents collapsing */
+}
+
+/* -------------------
+   HEADER
+------------------- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* ensures proper stacking */
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* -------------------
+   CONTACT SECTION
+------------------- */
+.contactSection {
+  padding: 15px 20px;
+}
+
+.contactSection h3 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #000000;
+  text-align: center; /* centers "Contact" heading */
+}
+
+.contactSection p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+/* -------------------
+   AVATAR
+------------------- */
+.avatar {
+  width: 100px;
+  height: 100px;
+  background: #0d6efd;
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+/* -------------------
+   STATS CARDS
+------------------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #444;
+}
+
+/* -------------------
+   RESPONSIVENESS
+------------------- */
+
+/* Tablets (≤ 992px) */
+@media (max-width: 992px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profileSection {
+    width: 90%;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 36px;
+  }
+}
+
+/* Mobiles (≤ 600px) */
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+    margin-top: 4em;
+  }
+
+  .profileSection {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .headerLeft {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stats {
+    grid-template-columns: 1fr; /* stack cards */
+  }
+
+  .contactSection h3 {
+    font-size: 15px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+}
