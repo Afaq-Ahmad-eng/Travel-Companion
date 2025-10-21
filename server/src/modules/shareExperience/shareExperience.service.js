@@ -1,8 +1,8 @@
 //This import for to use the prisma models 
 import prisma from "../../config/database.js";
 
-//This function is for to store experience like title, description, blog, rating, and user_id as forign key
-export const saveExperience = async ({ title, description, blog, rating, user_id }) => {
+//This function is for to store experience like title, description, blog, rating, and trip_id as forign key
+export const saveExperience = async ({ title, description, blog, rating, trip_id }) => {
   try{
   const newTrip = await prisma.share_experiences.create({
     data: {
@@ -10,7 +10,7 @@ export const saveExperience = async ({ title, description, blog, rating, user_id
       description,
       blog: blog || null,
       rating: parseFloat(rating),
-      user_id
+      trip_id
     }
   });
   return newTrip;
@@ -21,6 +21,7 @@ export const saveExperience = async ({ title, description, blog, rating, user_id
     if (shareExperienceTableError.meta.target === "unique_title") {
         throw {
           status: 409,
+          isExperienceTitleExist: true,
           message: `Dear user, the entered title (${title}) is already in use. Please enter a different one.`,
         };
       }
@@ -60,8 +61,25 @@ export const getRefreshTokenByUserId = async (userId) => {
     return result ? result.refresh_token : null;
     
   } catch (error) {
-
     throw new Error("Could not fetch refresh token");
   }
 };
 
+//function for fetch the trips data so, we can use the trip id and the trip title at the time of sharing experience
+export const getLatestTripByUserId = async (user_id) => {
+  try {
+    const trips = await prisma.trips.findMany({
+      where: { user_id },
+      orderBy: { created_at: "desc" }, // latest trip first
+      take: 1, // only get the latest one
+      select: {
+        trip_id: true,
+        trip_title: true,
+      },
+    });
+
+    return trips[0] || null; // return the latest trip or null if none
+  } catch (error) {
+    throw new Error("Could not fetch latest trip");
+  }
+};

@@ -1,5 +1,10 @@
 // auth.controller.js
-import { createUsers, getUserByEmail, createRefreshToken, updateUserUpdatedAtField } from "./auth.service.js";
+import {
+  createUsers,
+  getUserByEmail,
+  createRefreshToken,
+  updateUserUpdatedAtField,
+} from "./auth.service.js";
 import { validateRegister, validateLogin } from "./auth.validator.js";
 import { hashPassword, verifyPassword } from "../../utils/hashing.js";
 
@@ -88,7 +93,6 @@ export const login = async (req, res) => {
   const { user_email, user_password } = req.body;
   let checkPassword;
   let decncryptedData;
-  
 
   const errorStatusAndMessage = {
     success: false,
@@ -119,39 +123,47 @@ export const login = async (req, res) => {
   }
 
   try {
-    const userFortoUpDateUserUpdatedAtField = await getUserByEmail(decncryptedData.user_email);
-    
-    if (!userFortoUpDateUserUpdatedAtField) {
-      return res.status(401).json(errorStatusAndMessage);
-    }
-    
-    checkPassword = await verifyPassword(
-      decncryptedData.user_password,
-     userFortoUpDateUserUpdatedAtField.user_password
+    const userFortoUpDateUserUpdatedAtField = await getUserByEmail(
+      decncryptedData.user_email
     );
     
+    if (!userFortoUpDateUserUpdatedAtField) {
+      return res.status(401).json({
+        success: false,
+        isUserRegister: false,
+        message: "Dear user, you haven’t registered with us yet. Please register first to continue.",
+      });
+    }
+
+    checkPassword = await verifyPassword(
+      decncryptedData.user_password,
+      userFortoUpDateUserUpdatedAtField.user_password
+    );
+
     if (!checkPassword) {
       return res.status(401).json(errorStatusAndMessage);
     }
-    
-   const user = await updateUserUpdatedAtField(userFortoUpDateUserUpdatedAtField.user_id);
+
+    const user = await updateUserUpdatedAtField(
+      userFortoUpDateUserUpdatedAtField.user_id
+    );
 
     //Setting data for jwt token
     const jwtPayload = {
       user_id: user.user_id,
       user_email: decncryptedData.user_email,
     };
-     
+
     //Generate refresh and access token
     const refreshToken = generateRefreshToken(jwtPayload);
     const accessToken = generateAccessToken(jwtPayload);
-  
+
     //Here we encrypt both refresh and access token
     const encryptRefreshToken = encryptData(refreshToken);
     const encryptAccessToken = encryptData(accessToken);
-     
-    //Store refresh token in the DB for verification purpose 
-    await createRefreshToken(jwtPayload.user_id,encryptRefreshToken);
+
+    //Store refresh token in the DB for verification purpose
+    await createRefreshToken(jwtPayload.user_id, encryptRefreshToken);
 
     // Send access token in HttpOnly cookie
     setAccessToken(res, encryptAccessToken);
@@ -167,7 +179,7 @@ export const login = async (req, res) => {
         user_email: user.user_email,
         user_updatedAt: user.user_updatedAt,
         user_status: user.user_status,
-        user_role: user.user_role
+        user_role: user.user_role,
       },
     });
   } catch (error) {

@@ -40,11 +40,14 @@ export const createUsers = async (data) => {
 export const getUserByEmail = async (user_email) => {
   try {
     const user = await prisma.user.findUnique({ where: { user_email } });
+        
     return user;
+  
   } catch (error) {
+        
     throw {
       status: 404,
-      message: "Dear user, you are not registered with us. Thank you!",
+      message: "Invalid credentials. Please provide the correct credentials. Thank you!",
     };
   }
 };

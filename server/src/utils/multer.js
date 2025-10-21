@@ -1,6 +1,7 @@
+//server/src/utils/multer.js
 import multer from "multer";
 
-// Use memory storage so we can upload directly to MEGA (from buffer)
+// Use memory storage so we can upload directly to ImageKit (from buffer)
 const storage = multer.memoryStorage();
 
 const upload = multer({

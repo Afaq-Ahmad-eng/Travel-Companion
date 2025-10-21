@@ -11,7 +11,7 @@ model user {
   user_id            Int                 @id @default(autoincrement())
   user_name          String              @unique(map: "user_name") @db.VarChar(300)
   user_email         String              @unique(map: "user_email") @db.VarChar(300)
-  user_phoneno       String              @db.VarChar(30)
+  user_phoneno       String              @db.VarChar(200)
   user_interest      String              @db.VarChar(200)
   user_location      String              @db.VarChar(200)
   user_password      String              @db.VarChar(300)
@@ -19,7 +19,8 @@ model user {
   user_updatedAt     DateTime            @default(now()) @db.Timestamp(0)
   user_status        user_user_status    @default(active)
   user_role          user_user_role      @default(user)
-  share_experiences  share_experiences[]
+  is_logged_in       Boolean?            @default(false)
+  trips              trips[]
   user_refresh_token user_refresh_token?
 }
 
@@ -41,17 +42,85 @@ model experience_images {
 
 model share_experiences {
   experience_id     Int                 @id @default(autoincrement())
-  user_id           Int
+  trip_id           Int                 @unique(map: "trip_id")
   title             String              @unique(map: "unique_title") @db.VarChar(255)
   description       String              @db.Text
   blog              String?             @db.LongText
   rating            Decimal             @db.Decimal(2, 1)
   created_at        DateTime            @default(now()) @db.Timestamp(0)
-  updated_at        DateTime            @default(now()) @db.Timestamp(0)
+  updated_at        DateTime            @default(now()) @updatedAt @db.Timestamp(0)
   experience_images experience_images[]
-  user              user                @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "share_experiences_ibfk_1")
+  trips             trips               @relation(fields: [trip_id], references: [trip_id], onDelete: Cascade, onUpdate: Restrict, map: "fk_experience_trip")
+}
 
-  @@index([user_id], map: "user_id")
+model budgets {
+  budget_id         Int          @id @default(autoincrement())
+  trip_id           Int          @unique(map: "trip_id")
+  trip_budget_title String       @db.VarChar(150)
+  total_amount      Decimal      @default(0.00) @db.Decimal(12, 2)
+  created_at        DateTime     @default(now()) @db.Timestamp(0)
+  updated_at        DateTime     @default(now()) @db.Timestamp(0)
+  trips             trips        @relation(fields: [trip_id], references: [trip_id], onDelete: Cascade, onUpdate: Restrict, map: "fk_budgets_trip")
+  categories        categories[]
+}
+
+model categories {
+  category_id      Int        @id @default(autoincrement())
+  budget_id        Int
+  category_name    String     @db.VarChar(100)
+  allocated_amount Decimal?   @default(0.00) @db.Decimal(12, 2)
+  created_at       DateTime   @default(now()) @db.Timestamp(0)
+  updated_at       DateTime   @default(now()) @db.Timestamp(0)
+  budgets          budgets    @relation(fields: [budget_id], references: [budget_id], onDelete: Cascade, map: "categories_ibfk_1")
+  expenses         expenses[]
+
+  @@index([budget_id], map: "budget_id")
+}
+
+model expenses {
+  expense_id   Int        @id @default(autoincrement())
+  category_id  Int
+  description  String?    @db.VarChar(255)
+  amount       Decimal    @db.Decimal(12, 2)
+  expense_date DateTime   @db.Date
+  created_at   DateTime   @default(now()) @db.Timestamp(0)
+  updated_at   DateTime   @default(now()) @db.Timestamp(0)
+  categories   categories @relation(fields: [category_id], references: [category_id], onDelete: Cascade, map: "expenses_ibfk_1")
+
+  @@index([category_id], map: "category_id")
+}
+
+model trips {
+  trip_id           Int                @id @default(autoincrement())
+  user_id           Int
+  trip_title        String             @db.VarChar(255)
+  destination       String             @db.VarChar(255)
+  start_date        DateTime?          @db.DateTime(0)
+  end_date          DateTime?          @db.DateTime(0)
+  created_at        DateTime           @default(now()) @db.Timestamp(0)
+  updated_at        DateTime           @default(now()) @db.Timestamp(0)
+  budgets           budgets?
+  share_experiences share_experiences?
+  trip_interests    trip_interests[]
+  user              user               @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "fk_trips_user")
+
+  @@index([user_id], map: "fk_trips_user")
+}
+
+model interest_areas {
+  interest_id    Int              @id @default(autoincrement())
+  interest_name  String           @db.VarChar(100)
+  trip_interests trip_interests[]
+}
+
+model trip_interests {
+  trip_id        Int
+  interest_id    Int
+  trips          trips          @relation(fields: [trip_id], references: [trip_id], onDelete: Cascade, onUpdate: Restrict, map: "trip_interests_ibfk_1")
+  interest_areas interest_areas @relation(fields: [interest_id], references: [interest_id], onDelete: Cascade, onUpdate: Restrict, map: "trip_interests_ibfk_2")
+
+  @@id([trip_id, interest_id])
+  @@index([interest_id], map: "interest_id")
 }
 
 enum user_user_status {

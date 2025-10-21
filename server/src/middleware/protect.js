@@ -76,7 +76,7 @@ export const protectedRoutes = async (req, res, next) => {
           return res.status(401).json({
             TokensValid: false,
             TokensExpire: true,
-            message: "Session expired. Please login",
+           message: "Your session has expired. Please log in again to continue using this resource.",
           });
         }
         //If any other error occurs during refresh token checking, the catch block will be executed
@@ -91,7 +91,7 @@ export const protectedRoutes = async (req, res, next) => {
       return res.status(401).json({
         TokensValid: false,
         TokensExpire: true,
-        message: "Session expired. Please login",
+        message: "Dear user, your session has expired. Please log in again to continue.",
       });
     }
     //if there is any error in this protected routes then we send status code 500 (means server error) and attach object with this for some information
