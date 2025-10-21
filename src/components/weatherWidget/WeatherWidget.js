@@ -14,7 +14,7 @@ const WeatherWidget = ({ coordinates, destinationName }) => {
     const fetchWeather = async () => {
       try {
         setLoading(true);
-        const API_KEY = '19e05d2e461adfec26c56a32f754c18a';
+        
         const response = await axios.get(
           `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lng}&appid=${API_KEY}&units=metric`
         );
