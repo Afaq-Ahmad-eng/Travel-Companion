@@ -1,0 +1,519 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 12000;
+  animation: fadeIn 0.2s ease-in-out;
+  padding: 20px;
+}
+
+.modal {
+  width: 100%;
+  height: 100%;
+  max-width: 1400px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e1e5e9;
+  flex-shrink: 0;
+}
+
+.titleSection {
+  flex: 1;
+}
+
+.title {
+  margin: 0 0 8px 0;
+  color: #2d3748;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0;
+  color: #718096;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.closeButton {
+  font-size: 28px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  transition: all 0.2s ease;
+  padding: 8px;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.closeButton:hover {
+  color: #2d3748;
+  background: #f7fafc;
+  transform: scale(1.1);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: 0;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filterLabel {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  padding: 8px 16px;
+  background: #fff;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+}
+
+.filterBtn:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.filterBtnActive {
+  background: #4299e1;
+  color: white;
+  border-color: #4299e1;
+}
+
+.filterBtnActive:hover {
+  background: #3182ce;
+  border-color: #3182ce;
+}
+
+.stats {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.totalTrips {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.filteredCount {
+  color: #718096;
+  font-size: 0.8rem;
+}
+
+/* Table */
+.tableContainer {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.tripsTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.tripsTable th {
+  background-color: #000000; ; 
+  color: white;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tripsTable th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.tripsTable th:last-child {
+  border-top-right-radius: 10px;
+}
+
+.tripsTable td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #2d3748;
+  font-weight: 500;
+}
+
+.tableRow:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Table Cell Styles */
+.tripId {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.tripTitle{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.destination {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.destinationName {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.destinationCountry {
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.date {
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.travelers {
+  text-align: center;
+  font-weight: 600;
+  color: #2d3748;
+  background: #e2e8f0;
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-block;
+  min-width: 30px;
+}
+
+.cost {
+  font-weight: 700;
+  color: #276749;
+  font-size: 0.9rem;
+}
+
+/* Status Badges */
+.statusBadge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  display: inline-block;
+  text-align: center;
+  min-width: 90px;
+}
+
+.statusCompleted {
+  background: #c6f6d5;
+  color: #276749;
+  border: 1px solid #9ae6b4;
+}
+
+.statusUpcoming {
+  background: #bee3f8;
+  color: #2c5aa0;
+  border: 1px solid #90cdf4;
+}
+
+.statusActive {
+  background: #fefcbf;
+  color: #d69e2e;
+  border: 1px solid #faf089;
+}
+
+.statusCancelled {
+  background: #fed7d7;
+  color: #c53030;
+  border: 1px solid #feb2b2;
+}
+
+.statusUnknown {
+  background: #e2e8f0;
+  color: #4a5568;
+  border: 1px solid #cbd5e0;
+}
+
+/* Loading, Error, and Empty States */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #718096;
+  font-size: 1.1rem;
+  gap: 16px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-left: 4px solid #4299e1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #e53e3e;
+  background: #fed7d7;
+  border-radius: 8px;
+  font-weight: 600;
+  margin: 20px 0;
+}
+
+.noTrips {
+  text-align: center;
+  padding: 60px 20px;
+  color: #718096;
+  font-size: 1.1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  margin: 20px;
+}
+
+/* Summary Section */
+.summary {
+  display: flex;
+  gap: 32px;
+  margin: 24px 0;
+  padding: 20px;
+  background: #f0fff4;
+  border-radius: 10px;
+  border: 1px solid #9ae6b4;
+  flex-wrap: wrap;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.summaryLabel {
+  font-size: 0.85rem;
+  color: #718096;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summaryValue {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #276749;
+}
+
+/* Button Group */
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid #e1e5e9;
+  flex-shrink: 0;
+}
+
+.closeBtn {
+  background: #fff;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.closeBtn:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .modal {
+    width: 98vw;
+    height: 98vh;
+    padding: 20px;
+  }
+  
+  .controls {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .filterGroup {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .filterButtons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    padding: 10px;
+  }
+  
+  .modal {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    padding: 16px;
+  }
+  
+  .header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+  
+  .title {
+    font-size: 1.4rem;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .summary {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 12px;
+  }
+  
+  .title {
+    font-size: 1.2rem;
+  }
+  
+  .filterBtn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .tripsTable th,
+  .tripsTable td {
+    padding: 12px 8px;
+    font-size: 0.85rem;
+  }
+  
+  .statusBadge {
+    min-width: 70px;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+}

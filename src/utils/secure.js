@@ -1,6 +1,7 @@
 //External library for AES encryption
 import CryptoJS from "crypto-js";
 
+//Secret key for AES encryption
 
 
 //Function to encrypt password using AES encryption
@@ -11,45 +12,62 @@ export const encryptData = (plainData) => {
 
 //Function to decrypt data
 export const decryptData = (encryptedData) => {
+    if (!encryptedData) {
+    return null;
+  }
   const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 
-// 🔒 Encrypt one file
-async function encryptFileForUpload(file) {
+
+// Convert ArrayBuffer/Uint8Array to Base64 string
+function arrayBufferToBase64(buffer) {
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary); // Base64
+}
+
+// Encrypt raw file binary
+async function encryptFileForUpload(file, aesKey) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      const fileContent = reader.result; // full base64 (includes data:image/...;base64,)
-      
-      // Remove the prefix BEFORE encrypting
-      const base64Only = fileContent.replace(/^data:[^,]+,/, "");
 
-      // Encrypt only the base64 gibberish
-      const encryptedContent = encryptData(base64Only);
+    reader.onload = () => {
+      const arrayBuffer = reader.result;
+
+      // Convert binary to Base64
+      const base64String = arrayBufferToBase64(arrayBuffer);
+
+      // Encrypt Base64 string with AES
+      const encrypted = CryptoJS.AES.encrypt(base64String, aesKey).toString();
 
       resolve({
         name: file.name,
         type: file.type,
         size: file.size,
-        content: encryptedContent, // only encrypted gibberish
+        content: encrypted, // AES-encrypted Base64 of binary
       });
     };
+
     reader.onerror = reject;
-    reader.readAsDataURL(file); // Convert file to Base64
+    reader.readAsArrayBuffer(file); // Read raw binary
   });
 }
 
-// 🔒 Encrypt multiple files
-export async function processImages(images) {
+// Encrypt multiple files
+export async function processImages(files, aesKey) {
   const encryptedImages = await Promise.all(
-    images.map((file) => encryptFileForUpload(file))
+    files.map((file) => encryptFileForUpload(file, aesKey))
   );
   return encryptedImages;
 }
 
-export const encryptedImages = processImages;
 
+export const encryptedImages = processImages;
 
 // 🔓 Decrypt one file's content
 function decryptFileForUse(encryptedFile) {

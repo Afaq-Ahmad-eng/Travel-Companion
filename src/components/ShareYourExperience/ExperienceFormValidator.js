@@ -7,7 +7,7 @@ import * as yup from "yup";
 import XRegExp from "xregexp";
 
 //Regular Expression for title input field
-const RegExpForValidation = XRegExp(
+export const RegExpForValidation = XRegExp(
   "^(?!.*\\d)[\\p{L}]+(?:[ '-][\\p{L}]+)*$",
   "u"
 );
@@ -32,7 +32,7 @@ const wordSet = new Set(words);
 // }
 
 //function which check that the words which user provide is exist in real-world or not
-function isEnglishWords(sentence) {
+export function isEnglishWords(sentence) {
   if (!sentence) return false;
 
   // Split words and normalize
@@ -50,17 +50,17 @@ function isEnglishWords(sentence) {
 }
 
 export const validSchema = yup.object({
-  title: yup
-    .string()
-    .required("You must provide a Title!")
-    .matches(RegExpForValidation, "Enter A Valid Title")
-    .test(
-      "title",
-      "Title must use valid English words (e.g., 'Trip with Friends').",
-    (val) => {
-          return isEnglishWords(val);
-        }
-    ),
+  // title: yup
+  //   .string()
+  //   .required("You must provide a Title!")
+  //   .matches(RegExpForValidation, "Enter A Valid Title")
+  //   .test(
+  //     "title",
+  //     "Title must use valid English words (e.g., 'Trip with Friends').",
+  //   (val) => {
+  //         return isEnglishWords(val);
+  //       }
+  //   ),
   description: yup
     .string()
     .required("Description field is required.")
@@ -86,6 +86,7 @@ export const validSchema = yup.object({
     .test("description", "Description must contain valid English words.", (val) => {
       return isEnglishWords(val);
     }),
+    blog: yup.string().notRequired(),
   images: yup
     .array()
     .min(1, "At least 1 image is required")
@@ -93,7 +94,7 @@ export const validSchema = yup.object({
     .required("Images are required")
     .test(
       "fileType",
-      "Only image files are allowed",
+      "Please upload at least one image. Only image files are supported.",
       (files) =>
         files &&
         files.every((file) =>

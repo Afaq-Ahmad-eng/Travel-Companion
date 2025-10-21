@@ -178,14 +178,16 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import styles from "./Profile.module.css";
 // import Sidebar from "./SideBar";
-import { fatchDataFromServer } from "../../utils/api";
+import { fetchDataFromServer } from "../../utils/api";
 import TripsDetails from "./tripsDetails/TripsDetails";
 import PicturesGallery from "./picturesGallery/PicturesGallery";
 import AuthForm from "../../components/AuthForm/AuthForm";
+import Sidebar from "./SideBar";
+import AdminDashboard from "../AdminDashboard/AdminDashboard";
 
 const profileEndPoint = "http://localhost:3001/user/profile";
 
-const Profile = () => {
+const Profile = ({setCloseNavBar}) => {
   const [userData, setUserData] = useState({});
   const [showTrip, setShowTrip] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
@@ -195,14 +197,37 @@ const Profile = () => {
     mode: "login",
   });
 
+  //states to render the admin panel appropriatly
+  const [adminPanel, setAdminPanel] = useState(false)
+  const [userRole, setUserRole] = useState('')
+
   const fetchUserData = async () => {
     try {
-      const user = await fatchDataFromServer(profileEndPoint);
-      console.log("we are at frontend and we get user data for profile ",user);
-      
+      const user = await fetchDataFromServer(profileEndPoint);
+      console.log("we are at frontend and we get user data for profile ", user.user.user_role);
+      setUserRole(user.user.user_role)
       setUserData(user.user);
-      setTrips(user.user?.share_experiences || []);
+      try {
+        setTrips(user.user?.share_experiences || []);
+      } catch (err) {
+        console.log("we get error due to share experiences ", err);
+      }
+       const alreadyWelcomed = localStorage.getItem("welcomeShown");
+       (!alreadyWelcomed && user?.user?.user_name) && (
+      Swal.fire({
+        title: "Welcome Back!",
+        text: `We are glad to see you again, ${user.user.user_name}!`,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      }).then(()=>{
+        localStorage.setItem("welcomeShown", "true");
+      })
+    )
     } catch (error) {
+      console.log(`Error come in profile ${error}`);
+
       const errorMsg =
         error?.response?.data?.message || "Unexpected error occurred.";
       setShowAuthForm({ show: false });
@@ -234,21 +259,39 @@ const Profile = () => {
   }, []);
 
   if (showTrip)
-    return <TripsDetails trips={trips} onBack={() => setShowTrip(false)} />;
+    return <TripsDetails trips={[trips]} onBack={() => setShowTrip(false)} />;
+
+  console.log("Check that trip data structure ", trips);
 
   if (showGallery)
     return (
       <PicturesGallery
-        experiences={trips}
+        experiences={[trips]}
         onBack={() => setShowGallery(false)}
       />
     );
+
+    if(adminPanel){
+      return (
+        <AdminDashboard 
+        onClose={ () => setAdminPanel(false)}
+        setCloseNavBar={setCloseNavBar}
+        />
+      )
+    }
 
   return (
     <div className={styles.container}>
       {!showAuthForm.show ? (
         <>
-          {/* <Sidebar /> */}
+          <Sidebar 
+          setShowTrip={setShowTrip} 
+          setShowGallery={setShowGallery}
+          //Props for admin panel
+          setAdminPanel={setAdminPanel}
+          userRole={userRole}
+          setCloseNavBar={setCloseNavBar}
+          />
           <div className={styles.profileSection}>
             <div className={styles.header}>
               <div className={styles.headerLeft}>
@@ -260,7 +303,13 @@ const Profile = () => {
                 <div>
                   <h2>{userData.user_name}</h2>
                   <p>Location: {userData.user_location || "N/A"}</p>
-                  <p>Interests: {userData.user_interest || "N/A"}</p>
+                  <p>
+                    Interests:{" "}
+                    {Array.isArray(userData?.user_interest) &&
+                    userData.user_interest.length > 0
+                      ? userData.user_interest.join(", ")
+                      : "N/A"}
+                  </p>
                 </div>
               </div>
 
@@ -278,21 +327,13 @@ const Profile = () => {
             </div>
 
             <div className={styles.stats}>
-              <div
-                className={styles.card}
-                onClick={() => setShowTrip(true)}
-                style={{ cursor: "pointer" }}
-              >
+              <div className={styles.card}>
                 <h3>Trips Completed</h3>
-                <p>{userData?.TripCompleted || 0}</p>
+                <p>{userData?.TotalExperiences || 0}</p>
               </div>
 
-              <div
-                className={styles.card}
-                onClick={() => setShowGallery(true)}
-                style={{ cursor: "pointer" }}
-              >
-                <h3>My Picture Gallery</h3>
+              <div className={styles.card}>
+                <h3>My Pictures</h3>
                 <p>Pictures Uploaded : {userData?.TotalImages}</p>
               </div>
 

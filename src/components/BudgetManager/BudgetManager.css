@@ -241,6 +241,8 @@
 }
 .global-warning { margin: 1rem 0; }
 
+
+
 /* ========== Hero Button ========== */
 .hero-budget-btn {
   background-color: #fff;
@@ -259,6 +261,59 @@
   box-shadow: 0 0 20px rgba(0, 123, 255, 0.6);
   transform: translateY(-2px);
 }
+
+.reset-category-budget {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.reset-category-budget:hover {
+  background-color: #ff5252;
+ 
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
+.reset-category-budget:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+}
+
+
+
+/* Adjust the add-expense container to handle the new button */
+.add-expense {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.add-expense input {
+  flex: 1;
+  min-width: 120px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-expense button {
+  white-space: nowrap;
+}
+
+
+
 
 /* ========== Action Buttons Row ========== */
 .buttons-row {
@@ -302,7 +357,7 @@
 }
 .reset-button:hover {
   background-color: #d32f2f;
-  transform: translateY(-2px);
+
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 .reset-button:active {
@@ -336,7 +391,7 @@
 }
 .download-button:hover {
   background-color: #3a5a8f;
-  transform: translateY(-2px);
+  
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 .download-button:active {

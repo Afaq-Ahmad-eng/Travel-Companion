@@ -14,7 +14,7 @@
   top: 3%;
   left: 50%;
   transform: translate(-50%);
-  z-index: 9999;
+  z-index: 10000;
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
@@ -26,7 +26,7 @@
 
 /* When navbar is scrolled */
 .navbaritems.scrolled {
-  background-color: #fff;
+  background-color: #ffffff;
   transition: all 0.3s ease;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
@@ -47,7 +47,7 @@
 
 /* Logo turns dark when scrolled */
 .navbaritems.scrolled .logo {
-  color: #333;
+  color: #ffffff;
 }
 
 /* NAV LINKS */
@@ -61,7 +61,7 @@
 
 .nav-links {
   text-decoration: none;
-  color: #fff;
+  color: #ffffff;
   font-size: 1.2rem;
   font-weight: 600;
   padding: 0.7rem 1rem;
@@ -82,12 +82,12 @@
 
 /* Scrolled link override */
 .nav-links.scrolled-link {
-  color: #333 !important;
+  color: #ffffff !important;
 }
 
 .nav-links.scrolled-link:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #000 !important;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff !important;
 }
 
 /* MENU ICONS */
@@ -97,18 +97,18 @@
 }
 
 .menu-icons i {
-  color: #fff;
+  color: #ffffff;
   font-size: 1.5rem;
   transition: color 0.3s ease;
 }
 
 /* Hamburger icon turns black when scrolled */
 .navbaritems.scrolled .menu-icons i {
-  color: #000;
+  color: #ffffff;
 }
 
 /* BUTTON */
-.btn {
+.btn-link {
   padding: 0.5rem 1rem;
   white-space: nowrap;
   border-radius: 0.3rem;
@@ -121,9 +121,28 @@
   color: #fff;
 }
 
-.btn:hover {
+.btn-link:hover {
   background-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
+}
+
+/* When on profile or admin dashboard */
+.dark-page {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark-logo {
+  color: #000000 !important;
+}
+
+.dark-link {
+  color: #000000 !important;
+}
+
+.dark-link:hover {
+  color: #ffffff !important;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* MOBILE RESPONSIVE STYLES */
@@ -156,6 +175,18 @@
     z-index: -1;
   }
 
+  .btn-link {
+    background: rgba(255, 255, 255, 0.15);
+    margin-top: 1rem;
+    border-radius: 8px;
+    width: 80%;
+    align-self: center;
+    color: #fff;
+  }
+
+  .btn-link:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
   .nav-links {
     display: block;
     width: 100%;
@@ -195,6 +226,7 @@
   .menu-icons {
     display: block;
   }
+  
 }
 
 

@@ -52,6 +52,8 @@ import { useState } from "react";
 import styles from "./PicturesGallery.module.css";
 
 const PicturesGallery = ({ experiences, onBack }) => {
+  console.log("We get the experience data ",experiences);
+  
   const [selectedImage, setSelectedImage] = useState(null); // For full-screen view
 
   const handleImageClick = (imageUrl) => {

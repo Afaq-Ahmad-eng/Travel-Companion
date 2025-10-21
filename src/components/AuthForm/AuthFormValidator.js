@@ -1,7 +1,11 @@
-//External modules
-
+// internal modules
+import {
+  isEnglishWords,
+  RegExpForValidation,
+} from "../ShareYourExperience/ExperienceFormValidator";
 //Yup is library which we use for the validation
 import * as yup from "yup";
+
 
 //Regular expression to prevent user to put only valid entries
 const RegExpressionForAuthFormValidation = /^[\p{L}][\p{L} \-']*[\p{L}]$/u;
@@ -30,17 +34,25 @@ export const validSchema = (isLogin) =>
       .string()
       .required("Email is required")
       .email("Invalid email format"),
-    password: yup
+    interest: isLogin
+      ? yup.string().notRequired()
+      :yup
       .string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters")
-      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-      .matches(/[0-9]/, "Password must contain at least one number")
-      .matches(
-        /[@$!%*?&_]/,
-        "Password must contain at least one special character (@, $, !, %, *, ?, &)"
+      .required("Interest area's is required")
+      .matches(RegExpForValidation, "Enter A Valid Interest area's")
+      .test(
+        "interest",
+        "interest area's must use valid English words (e.g., 'Mountain, hiking etc').",
+        (val) => {
+          return isEnglishWords(val);
+        }
       ),
+      location: isLogin
+      ? yup.string().notRequired()
+      :yup 
+        .string()
+        .required("Location is required")
+        .matches(RegExpForValidation,"Enter a valid location"),
     phoneNumber: isLogin
       ? yup.string().notRequired()
       : yup
@@ -61,4 +73,15 @@ export const validSchema = (isLogin) =>
             13,
             "Phone Number must be at most 13 digits long including country code"
           ),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(6, "Password must be at least 6 characters")
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+      .matches(/[0-9]/, "Password must contain at least one number")
+      .matches(
+        /[@$!%*?&_]/,
+        "Password must contain at least one special character (@, $, !, %, *, ?, &)"
+      ),
   });

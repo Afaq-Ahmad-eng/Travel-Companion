@@ -49,24 +49,7 @@ export default function Destination() {
       img1: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCkCgg6a5wR9t9KL_dW59qHtuqlThrZLCQ1A&s",
       img2: "https://thetravelnorth.com/wp-content/uploads/2024/10/Shogran-Siri-Paye3_11zon.webp",
     },
-    {
-      heading: ' Ayubia National Park',
-      text: 'Located in the Galiyat region, Ayubia National Park is a lush green haven for wildlife and nature lovers. The famous Pipeline Walk between Dunga Gali and Ayubia is a favorite among families, while the Mushkpuri Top trek offers breathtaking views. The park is home to leopards, monkeys, and hundreds of bird species, making it a biodiversity hotspot perfect for hiking, photography, and relaxation. 📍Distance from Peshawar: ~210 km (5 hours)',
-       img1: "https://wwfasia.awsassets.panda.org/img/dessan_valley_693935.jpg",
-      img2: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Ayubia_National_Park_Pipeline_Track_02.jpg/250px-Ayubia_National_Park_Pipeline_Track_02.jpg",
-    },
-    {
-      heading: 'Alpine Lakes (Dudipatsar, Saidgai, Kundol, Mahodand)',
-      text: ' These breathtaking alpine lakes—Dudipatsar, Kundol, Mahodand, and Saidgai—are nestled deep in the mountains and require trekking to reach. Surrounded by lush meadows, wildflowers, and glaciers, they are favorite spots for hikers and nature photographers. The water in these lakes is so clear and still that it mirrors the sky, offering peace and inspiration to those who reach them. 📍Distance from Peshawar: ~340–370 km + hike (8–10 hours + trek)',
-     img1: "https://images.unsplash.com/photo-1650493359585-f394207e8460?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YWxwaW5lJTIwbGFrZXxlbnwwfHwwfHx8MA%3D%3D",
-    img2: "https://i.dawn.com/primary/2017/05/592a95aaabc67.jpg",
-    },
-    {
-      heading: 'Heritage Sites (Takht Bhai, Peshawar, Swabi)',
-      text: 'KPK’s rich history comes alive in its heritage sites like Takht Bhai, a UNESCO World Heritage Buddhist monastery dating back to the 1st century AD. Bala Hisar Fort and Qissa Khawani Bazaar in Peshawar offer a glimpse into centuries of trade, war, and storytelling. These cultural sites are perfect for tourists seeking to connect with the ancient Gandharan civilization and colonial history. 📍Distance from Peshawar: 5 km to ~80 km',
-       img1: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHu3_vCt0SZEJUBr5--BWRJDclEoMliFwhWA&s",
-      img2: "https://res.cloudinary.com/www-travelpakistani-com/image/upload/w_900,h_360,c_fill,g_auto,q_30,dpr_1.0,f_auto/blogs/wxzmlwevju3guuqkuwnx.webp",
-    },
+    
   ];
 
   const visibleDestinations = showAll ? destinations : destinations.slice(0, 3);
