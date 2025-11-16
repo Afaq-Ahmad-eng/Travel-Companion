@@ -44,138 +44,135 @@ export const storingDataOfBudgetsAndCategeriesAndExpenses = async (
       (item) => item && typeof item === "object" && item.categoryName
     );
 
-
     const existingBudget = await prisma.budgets.findUnique({
-  where: { trip_id: tripsData[0].trip_id },
-  include: {
-    categories: {
+      where: { trip_id: tripsData[0].trip_id },
       include: {
-        expenses: true,
+        categories: {
+          include: {
+            expenses: true,
+          },
+        },
       },
-    },
-  },
-});
+    });
 
-if (!existingBudget) {
-  await prisma.budgets.create({
-    data: {
-      trip_id: tripsData[0].trip_id,
-      trip_budget_title: tripsData[0].trip_title,
-      total_amount: budgetManagerData.TotalBudget || 0,
-      categories: {
-        create: categories.map((category) => ({
-          category_name: category.categoryName,
-          allocated_amount: category.categoryTotalBudget,
-          expenses: {
-            create: (category.categoryExpenses || []).map((expense) => ({
-              description: expense.expenseDescription || "",
-              amount: expense.expenseTotalAmount || 0,
-              expense_date: expense.expenseDate
-                ? new Date(expense.expenseDate)
-                : new Date(),
+    if (!existingBudget) {
+      await prisma.budgets.create({
+        data: {
+          trip_id: tripsData[0].trip_id,
+          trip_budget_title: tripsData[0].trip_title,
+          total_amount: budgetManagerData.TotalBudget || 0,
+          categories: {
+            create: categories.map((category) => ({
+              category_name: category.categoryName,
+              allocated_amount: category.categoryTotalBudget,
+              expenses: {
+                create: (category.categoryExpenses || []).map((expense) => ({
+                  description: expense.expenseDescription || "",
+                  amount: expense.expenseTotalAmount || 0,
+                  expense_date: expense.expenseDate
+                    ? new Date(expense.expenseDate)
+                    : new Date(),
+                })),
+              },
             })),
           },
-        })),
-      },
-    },
-  });
-}else {
-  // Update only changed budget fields
-  await prisma.budgets.update({
-    where: { trip_id: tripsData[0].trip_id },
-    data: {
-      ...(existingBudget.trip_budget_title !== tripsData[0].trip_title && {
-        trip_budget_title: tripsData[0].trip_title,
-      }),
-      ...(existingBudget.total_amount !== budgetManagerData.TotalBudget && {
-        total_amount: budgetManagerData.TotalBudget,
-      }),
-    },
-  });
-
-  // For each category in frontend data
-  for (const category of categories) {
-    const existingCategory = existingBudget.categories.find(
-      (c) => c.category_name === category.categoryName
-    );
-
-    if (existingCategory) {
-      // Update existing category fields
-      await prisma.categories.update({
-        where: { category_id: existingCategory.category_id },
+        },
+      });
+    } else {
+      // Update only changed budget fields
+      await prisma.budgets.update({
+        where: { trip_id: tripsData[0].trip_id },
         data: {
-          ...(existingCategory.allocated_amount !==
-            category.categoryTotalBudget && {
-            allocated_amount: category.categoryTotalBudget,
+          ...(existingBudget.trip_budget_title !== tripsData[0].trip_title && {
+            trip_budget_title: tripsData[0].trip_title,
+          }),
+          ...(existingBudget.total_amount !== budgetManagerData.TotalBudget && {
+            total_amount: budgetManagerData.TotalBudget,
           }),
         },
       });
 
-      // Handle expenses of this category
-      for (const expense of category.categoryExpenses || []) {
-        const existingExpense = existingCategory.expenses.find(
-          (e) => e.description === expense.expenseDescription
+      // For each category in frontend data
+      for (const category of categories) {
+        const existingCategory = existingBudget.categories.find(
+          (c) => c.category_name === category.categoryName
         );
 
-        if (existingExpense) {
-          // Update only changed fields
-          await prisma.expenses.update({
-            where: { expense_id: existingExpense.expense_id },
+        if (existingCategory) {
+          // Update existing category fields
+          await prisma.categories.update({
+            where: { category_id: existingCategory.category_id },
             data: {
-              ...(existingExpense.amount !== expense.expenseTotalAmount && {
-                amount: expense.expenseTotalAmount,
-              }),
-              ...(existingExpense.expense_date.toISOString() !==
-                new Date(expense.expenseDate).toISOString() && {
-                expense_date: new Date(expense.expenseDate),
+              ...(existingCategory.allocated_amount !==
+                category.categoryTotalBudget && {
+                allocated_amount: category.categoryTotalBudget,
               }),
             },
           });
+
+          // Handle expenses of this category
+          for (const expense of category.categoryExpenses || []) {
+            const existingExpense = existingCategory.expenses.find(
+              (e) => e.description === expense.expenseDescription
+            );
+
+            if (existingExpense) {
+              // Update only changed fields
+              await prisma.expenses.update({
+                where: { expense_id: existingExpense.expense_id },
+                data: {
+                  ...(existingExpense.amount !== expense.expenseTotalAmount && {
+                    amount: expense.expenseTotalAmount,
+                  }),
+                  ...(existingExpense.expense_date.toISOString() !==
+                    new Date(expense.expenseDate).toISOString() && {
+                    expense_date: new Date(expense.expenseDate),
+                  }),
+                },
+              });
+            } else {
+              // Create new expense
+              await prisma.expenses.create({
+                data: {
+                  category_id: existingCategory.category_id,
+                  description: expense.expenseDescription,
+                  amount: expense.expenseTotalAmount,
+                  expense_date: expense.expenseDate
+                    ? new Date(expense.expenseDate)
+                    : new Date(),
+                },
+              });
+            }
+          }
         } else {
-          // Create new expense
-          await prisma.expenses.create({
+          // Create new category with its expenses
+          await prisma.categories.create({
             data: {
-              category_id: existingCategory.category_id,
-              description: expense.expenseDescription,
-              amount: expense.expenseTotalAmount,
-              expense_date: expense.expenseDate
-                ? new Date(expense.expenseDate)
-                : new Date(),
+              budget_id: existingBudget.budget_id,
+              category_name: category.categoryName,
+              allocated_amount: category.categoryTotalBudget,
+              expenses: {
+                create: (category.categoryExpenses || []).map((expense) => ({
+                  description: expense.expenseDescription,
+                  amount: expense.expenseTotalAmount,
+                  expense_date: expense.expenseDate
+                    ? new Date(expense.expenseDate)
+                    : new Date(),
+                })),
+              },
             },
           });
         }
       }
-    } else {
-      // Create new category with its expenses
-      await prisma.categories.create({
-        data: {
-          budget_id: existingBudget.budget_id,
-          category_name: category.categoryName,
-          allocated_amount: category.categoryTotalBudget,
-          expenses: {
-            create: (category.categoryExpenses || []).map((expense) => ({
-              description: expense.expenseDescription,
-              amount: expense.expenseTotalAmount,
-              expense_date: expense.expenseDate
-                ? new Date(expense.expenseDate)
-                : new Date(),
-            })),
-          },
-        },
-      });
     }
-  }
-}    
   } catch (saveBudgetDataError) {
-    console.log("we get error ",saveBudgetDataError);
-    
+    console.log("we get error ", saveBudgetDataError);
+
     throw saveBudgetDataError;
   }
 };
 
-
 export const tripDataForBudgetCheck = async (user_id) => {
-
   try {
     const tripStart = await prisma.trips.findFirst({
       where: { user_id },
@@ -185,9 +182,51 @@ export const tripDataForBudgetCheck = async (user_id) => {
     });
     return tripStart;
   } catch (tripDataForBudgetCheckError) {
-    throw  {
+    throw {
       prismaStatusCode: 404,
-      message: `Sorry! Something went wrong while loading your trip information.`
+      message: `Sorry! Something went wrong while loading your trip information.`,
+    };
+  }
+};
+
+//service for geting unset trip budget
+export const tripWithOutBudget = async (user_id) => {
+  try {
+    const tripsWithoutBudgets = await prisma.trips.findMany({
+      where: {
+        user_id,
+        budgets: { is: null },
+      },
+    });
+
+    const latestTrip = await prisma.trips.findFirst({
+      where: { user_id },
+      include: {
+        budgets: {
+          include: {
+            categories: {
+              include: {
+                expenses: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        trip_id: "desc", // Or trip_startDate if you have date field
+      },
+    });
+
+    let result = tripsWithoutBudgets;
+    if (
+      latestTrip &&
+      !tripsWithoutBudgets.some((t) => t.trip_id === latestTrip.trip_id)
+    ) {
+      result = [latestTrip, ...tripsWithoutBudgets];
     }
+
+    return result;
+  } catch (tripWithOutBudgetEror) {
+    console.log(tripWithOutBudgetEror);
   }
 };

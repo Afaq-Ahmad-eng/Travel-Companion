@@ -1,13 +1,10 @@
 import { tripSchema } from "./tripPlan.validator.js";
 import {createTripPlanForDB} from "./tripPlan.service.js";
 export const createTripPlan = async (req, res) => {
+  console.log(`We on the create Trip Plan endpoint `,req.body);
   try {
 
     console.log("we print request only the user data ",req.user);
-    
-    
-    console.log(`We on the create Trip Plan endpoint `,req.body);
-    
     // Server-side validation (matches client rules)
     const { error , value} = tripSchema.validate(req.body, { abortEarly: false });
     if (error) {

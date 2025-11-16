@@ -1,13 +1,14 @@
 import prisma from "../../config/database.js";
+import { AppError } from "../../utils/AppError.js";
 
 //This function handles the creation of a new user during their initial registration.
 export const createUsers = async (data) => {
+  
   try {
     const user = await prisma.user.create({
       data: {
         user_name: data.user_name,
         user_email: data.user_email,
-        user_interest: data.user_interest,
         user_location: data.user_location,
         user_password: data.user_password,
         user_phoneno: data.user_phoneno,
@@ -93,18 +94,38 @@ export const createRefreshToken = async (userId, refreshToken) => {
 
 //This function is used to update only the user_updatedAt field in the database to track the user's last login time.
 export const updateUserUpdatedAtField = async (user_id) => {
-   
   try {
+    // find the current user
+    const existingUser = await prisma.user.findUnique({
+      where: { user_id },
+      select: { user_status: true },
+    });
+
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    //  build dynamic update object
+    const updateData = {
+      user_updatedAt: new Date(),
+      is_logged_in: true,
+    };
+
+    // conditionally update status
+    if (existingUser.user_status === "pending") {
+      updateData.user_status = "active";
+    }
+
+    // update user
     const updatedUser = await prisma.user.update({
       where: { user_id },
-      data: { user_updatedAt: new Date() },
+      data: updateData,
       select: {
         user_id: true,
         user_name: true,
         user_email: true,
         user_updatedAt: true,
         user_status: true,
-        user_role: true
       },
     });
 
@@ -112,4 +133,60 @@ export const updateUserUpdatedAtField = async (user_id) => {
   } catch (error) {
     throw new Error("Login failed. Please check your credentials.");
   }
+};
+
+export const getUserDataForUserToken = async (userId) => {
+  try{
+    const result = await prisma.user.findUnique({
+      where:{user_id: userId},
+      select:{
+        user_id:true,
+        user_email: true
+      }
+    })
+ return result;
+  }catch(error){
+ console.log("we get when fetching user data for token ", error);
+  }
 }
+
+export const saveUserNewRefreshTokenInDB = async (userId, newRefreshToken) => {
+  try{
+       const res = await prisma.user_refresh_token.upsert({
+        where:{user_id:userId},
+        update:{resfresh_token: newRefreshToken},
+        create:{
+          user_id: userId,
+          refresh_token: newRefreshToken
+        }})
+  }catch(error){
+    console.log(error);
+  }
+}
+
+export const getAdminDataForAdminToken = async (adminId) => {
+  try{
+    const result = await prisma.admin.findUnique({
+      where: {admin_id: adminId}
+    })
+    return result;
+  }catch(error){
+    console.log(error);
+  }
+}
+
+export const saveNewRefreshTokenOfAdmin = async (adminId, encryptRefreshToken) => {
+  try {
+    return await prisma.admin_refresh_token.upsert({
+      where: { admin_id: adminId },
+      update: { refresh_token: encryptRefreshToken },
+      create: {
+        admin_id: adminId,
+        refresh_token: encryptRefreshToken,
+      },
+    });
+  } catch (error) {
+    console.error("Error saving admin refresh token:", error);
+    throw new AppError(error, 690)
+  }
+};

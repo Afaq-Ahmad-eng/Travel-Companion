@@ -13,7 +13,6 @@
 // };
 // export default createTripPlanForDB;
 
-import e from "express";
 import prisma from "../../config/database.js";
 
 export const createTripPlanForDB = async (tripData) => {

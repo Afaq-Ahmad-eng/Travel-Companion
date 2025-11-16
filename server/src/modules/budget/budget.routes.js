@@ -2,12 +2,13 @@
 import express from 'express'
 
 //Internal modules
-import { budgetManager, checkBudgetManagerStatus } from './budget.controller.js';
+import { budgetManager, checkBudgetManagerStatus, unsetTripBudget } from './budget.controller.js';
 
 const router = express.Router();
 
 
 router.post("/save", budgetManager);
 router.get("/check", checkBudgetManagerStatus);
+router.get('/unset-trip-budget',unsetTripBudget)
 
 export default router;

@@ -54,26 +54,26 @@ export const imagekit = new ImageKit({
   urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
 });
 
-/**
- * Upload an image buffer directly to ImageKit
- * @param {Buffer} buffer - The image file buffer from multer
- * @param {string} fileName - The original filename
- * @returns {string} - The uploaded image URL
- */
-export const uploadBufferToImageKit = async (buffer, fileName) => {
-  if (!buffer || !fileName) throw new Error("Buffer and fileName are required");
+// /**
+//  * Upload an image buffer directly to ImageKit
+//  * @param {Buffer} buffer - The image file buffer from multer
+//  * @param {string} fileName - The original filename
+//  * @returns {string} - The uploaded image URL
+//  */
+// export const uploadBufferToImageKit = async (buffer, fileName) => {
+//   if (!buffer || !fileName) throw new Error("Buffer and fileName are required");
 
-  try {
-    const file = req.file; // from multer
-    const uploadResponse = await imagekit.upload({
-      file: file.buffer, // actual file buffer
-      fileName: file.originalname,
-      folder: "/travel_experiences_images", // optional folder name in ImageKit
-    });
+//   try {
+//     const file = req.file; // from multer
+//     const uploadResponse = await imagekit.upload({
+//       file: file.buffer, // actual file buffer
+//       fileName: file.originalname,
+//       folder: "/travel_experiences_images", // optional folder name in ImageKit
+//     });
 
-    return uploadResponse.url; // Direct viewable URL
-  } catch (err) {
-    console.error("Error uploading to ImageKit:", err);
-    throw err;
-  }
-};
+//     return uploadResponse.url; // Direct viewable URL
+//   } catch (err) {
+//     console.error("Error uploading to ImageKit:", err);
+//     throw err;
+//   }
+// };

@@ -8,10 +8,10 @@ function setcookies(response,TokenName, encryptToken, maximumAge){
     });
 }
 
-export function setAccessToken (response,token){
-    setcookies(response,"accessToken",token, 30 * 60 * 1000)
+export function setAccessToken (response,tokenName,token){
+    setcookies(response,tokenName,token, 30 * 60 * 1000)
 }
 
-export function setRefreshToken (response, token){
-    setcookies(response,"refreshToken",token, 7 * 24 * 60 * 60 * 1000);
+export function setRefreshToken (response,tokenName, token){
+    setcookies(response,tokenName,token, 7 * 24 * 60 * 60 * 1000);
 }

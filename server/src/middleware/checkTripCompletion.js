@@ -13,13 +13,18 @@ export const checkTripCompletion = async (req, res, next) => {
     const latestTrip = await fatchedTrip(userId);
 
   if (!latestTrip) {
-    return res.status(400).json({ message: "No trips found for this user" });
+    return res.status(400).json({
+      showNavigation: true,
+      message: "No trips found for this user" });
   }
 
   if (new Date() < new Date(latestTrip.end_date)) {
     return res
       .status(403)
-      .json({ message: "You can share experience only after trip ends, Thank you!" });
+      .json({ 
+        message: "You can share experience only after trip ends, Thank you!" ,
+        showNavigation:true
+      });
   }
 
   next(); 

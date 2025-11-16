@@ -6,6 +6,7 @@ export const hashPassword = async (password) => {
     const hash = await argon.hash(password);
     return hash;
   } catch (error) {
+    console.log("Error while hashing password: and we are at the hashPassword function", error);
     throw new Error("Password hashing failed");
   }
 };

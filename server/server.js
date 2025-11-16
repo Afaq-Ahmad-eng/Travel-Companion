@@ -2,9 +2,11 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+
+
 //App entry point
 import app from "./src/app.js";
-app.listen(process.env.SERVER_PORT, () => {
+app.listen(process.env.SERVER_PORT,"0.0.0.0" ,() => {
 
   console.log(`Server is running on port http://localhost:${process.env.SERVER_PORT}`);
 });

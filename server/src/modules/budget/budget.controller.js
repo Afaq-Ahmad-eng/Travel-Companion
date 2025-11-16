@@ -3,6 +3,7 @@ import {
   storingDataOfBudgetsAndCategeriesAndExpenses,
   userAndTripDataForBudgetManger,
   tripDataForBudgetCheck,
+  tripWithOutBudget,
 } from "./budget.service.js";
 
 export const budgetManager = async (request, response) => {
@@ -85,3 +86,22 @@ export const checkBudgetManagerStatus = async (request, response) => {
     });
   }
 };
+
+
+//controller for the unset trip budget
+export const unsetTripBudget = async (req, res, next) =>{
+  try{
+    const {user_id} = req.user;
+    console.log("We chech the user id ", user_id);
+    console.log("We chech the user id type ", typeof user_id);
+
+    const response = await tripWithOutBudget(user_id);
+    
+    res.status(200).json({
+      meassge: "we reached at the unsetTripBudget controller",
+      data: response
+    })
+  }catch(error){
+     console.log(error);
+  }
+}

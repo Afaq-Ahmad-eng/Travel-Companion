@@ -1,8 +1,10 @@
 //Internal modules
+import { getUserDataForUserToken, saveUserNewRefreshTokenInDB } from "../modules/auth/auth.service.js";
 import { getRefreshTokenByUserId } from "../modules/shareExperience/shareExperience.service.js";
-import { setAccessToken } from "../utils/cookies.js";
+import { AppError } from "../utils/AppError.js";
+import { setAccessToken, setRefreshToken } from "../utils/cookies.js";
 import { decryptData, encryptData } from "../utils/secure.js";
-import { generateAccessToken, verifyToken } from "../utils/tokens.js";
+import { generateAccessToken, generateRefreshToken, verifyToken } from "../utils/tokens.js";
 import dotenv from "dotenv";
 // Load environment variables from .env file
 dotenv.config();
@@ -13,8 +15,8 @@ const objectForNotValidToken = { valid: false, expired: true };
 export const protectedRoutes = async (req, res, next) => {
   try {
     //We get the access and refresh tokens from cookies in encrypted form, so we directly decrypt them as well.
-    const decryptedAccessToken = decryptData(req?.cookies?.accessToken);
-    const decryptedRefreshToken = decryptData(req?.cookies?.refreshToken);
+    const decryptedAccessToken = decryptData(req?.cookies?.user_accessToken);
+    const decryptedRefreshToken = decryptData(req?.cookies?.user_refreshToken);
 
     //Verify whether the access token is valid or not (come from cookie)
     const isAccessTokenValid = decryptedAccessToken
@@ -53,19 +55,31 @@ export const protectedRoutes = async (req, res, next) => {
             )
           : objectForNotValidToken;
 
-        //Check whether both refresh tokens (from cookie and DB) are the same and valid. If yes, renew the access token and then pass control to the next middleware or the actual function.
-        if (
-          isRefreshTokenValid.valid === isDbRefreshTokenValid.valid &&
-          decryptedRefreshToken === decryptedRefresTokenOfTheDB
-        ) {
+
+          
+          //Check whether both refresh tokens (from cookie and DB) are the same and valid. If yes, renew the access token and then pass control to the next middleware or the actual function.
+          if (
+            isRefreshTokenValid.valid === isDbRefreshTokenValid.valid &&
+            decryptedRefreshToken === decryptedRefresTokenOfTheDB
+          ) {
+          const DBResultOfUser = await getUserDataForUserToken(isRefreshTokenValid.decoded.user_id);
+          console.log("we get the user data from the tokens and we are in the middleware ",DBResultOfUser);
+          const jwtPayloadForUser = {
+            user_id: DBResultOfUser.user_id,
+            user_email: DBResultOfUser.user_email
+          }
           //Renew the access token using refresh token
-          const newAccessToken = generateAccessToken(
-            isRefreshTokenValid.decoded
-          );
+          const newAccessToken = generateAccessToken(jwtPayloadForUser);
+
+          // const newRefreshTokenForUser = generateRefreshToken(jwtPayloadForUser);
+          // const newRefreshTokenForUserEncrypt = encryptData(newRefreshTokenForUser);
 
           //Here we set the new created access token for the cookies
-          setAccessToken(res, encryptData(newAccessToken));
+          setAccessToken(res,"user_accessToken", encryptData(newAccessToken));
+          // setRefreshToken(res,"user_refreshToken",newRefreshTokenForUserEncrypt)
 
+          // const saveNewRefreshTokenInDB = await saveUserNewRefreshTokenInDB(jwtPayloadForUser.user_id, newRefreshTokenForUserEncrypt);
+         
           // store user data for later use
           req.user = isRefreshTokenValid.decoded;
 
@@ -73,31 +87,54 @@ export const protectedRoutes = async (req, res, next) => {
           return next();
         } else {
           //Token mismatch or invalid, force re-login
-          return res.status(401).json({
-            TokensValid: false,
-            TokensExpire: true,
-           message: "Your session has expired. Please log in again to continue using this resource.",
-          });
+          throw new AppError(
+            "Your session has expired. Please log in again to continue using this resource.",
+            401,
+            null,
+            {
+              TokensValid: false,
+              TokensExpire: true,
+              showLoginAndRegistrationForm: true,
+            }
+          );
         }
         //If any other error occurs during refresh token checking, the catch block will be executed
       } catch (errorInGeneratingAccessToken) {
-        return res.status(401).json({
-          success: false,
-          message: "Failed to renew session. Please login again.",
-        });
+        throw new AppError(
+          "Failed to renew session. Please login again.",
+          401,
+          null,
+          {
+            success: false,
+            showLoginAndRegistrationForm: true,
+          }
+        );
       }
       //If both access and refresh token is not valid then return status code 401 (means unauthorized) and attach object with this so, the click check this object and then redirect user to the login form
     } else {
-      return res.status(401).json({
-        TokensValid: false,
-        TokensExpire: true,
-        message: "Dear user, your session has expired. Please log in again to continue.",
-      });
+      throw new AppError(
+        "Dear user, your session has expired. Please log in again to continue.",
+        401,
+        null,
+        {
+          TokensValid: false,
+          TokensExpire: true,
+          showLoginAndRegistrationForm: true,
+        }
+      );
     }
     //if there is any error in this protected routes then we send status code 500 (means server error) and attach object with this for some information
   } catch (protectedRoutesError) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Server error in authentication" });
+    //Only wrap unexpected errors
+    if (protectedRoutesError instanceof AppError) {
+      return next(protectedRoutesError); // Let your global errorHandler manage it
+    }
+
+    // Unexpected ones → wrap and send forward
+    next(
+      new AppError("Server error in authentication", 500, null, {
+        success: false,
+      })
+    );
   }
 };

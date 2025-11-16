@@ -1,93 +1,4 @@
-// //Prisma schema to use the prisma model
-// import prisma from "../../config/database.js";
-
-// const objectForCustomError = {
-//   status: 404,
-//   message: "Dear user, you are not registered with us. Thank you!",
-// };
-// export const getUserByIdForProfile = async (user_id) => {
-//   try {
-//     const user = await prisma.user.findUnique({
-//       where: { user_id },
-//       select: {
-//         user_name: true,
-//         user_email: true,
-//         user_phoneno: true,
-//         user_interest: true,
-//         user_location: true,
-//         user_status: true,
-//         user_role: true,
-
-//         share_experiences: {
-//           select: {
-//             experience_id: true,
-//             title: true,
-//             description: true,
-//             blog: true,
-//             rating: true,
-//             created_at: true,
-//             updated_at: true,
-
-//             experience_images: {
-//               select: {
-//                 id: true,
-//                 image_url: true,
-//               },
-//             },
-//           },
-//         },
-//         budgets:{
-//           select:{
-//            total_amount: true,
-//            categories:{
-//             select:{
-//               category_name: true,
-//               allocated_amount: true,
-//               expenses:{
-//                 select:{
-//                   description: true,
-//                   amount: true,
-//                   expense_date: true
-//                 },
-//               },
-//             },
-//            },
-//           },
-//         },
-//          _count: {
-//       select: { share_experiences: true }, // count related experiences
-//     },
-//       },
-//     });
-      
-//     console.log("We get user data ",user);
-    
-//     if (!user) throw objectForCustomError;
-
-
-//     // Let Prisma count only that user's images
-//     const totalImages = await prisma.experience_images.count({
-//       where: {
-//        share_experiences: {
-//           user_id: user_id, //ensures we count only this user's images
-//         },
-//       },
-//     });
-
-// return {
-//   ...user,
-//   _count:{
-//     ...user._count,
-//     total_images: totalImages
-//   }
-// };
-//   } catch (error) {
-//     //We set our custom error codes at the top, and if any error occurs, we use the corresponding error object. However, it’s better to use the actual error that comes from the real cause and show that message to the user.
-//      console.error("Error fetching user data:", error);
-//     throw objectForCustomError;
-//   }
-// };
-
+import { data } from "react-router-dom";
 import prisma from "../../config/database.js";
 
 const objectForCustomError = {
@@ -97,7 +8,6 @@ const objectForCustomError = {
 
 export const getUserByIdForProfile = async (user_id) => {
   try {
-    //  Fetch user with all nested relationships
     const user = await prisma.user.findUnique({
       where: { user_id },
       select: {
@@ -105,14 +15,11 @@ export const getUserByIdForProfile = async (user_id) => {
         user_name: true,
         user_email: true,
         user_phoneno: true,
-        user_interest: true,
         user_location: true,
         user_status: true,
-        user_role: true,
         user_joined: true,
         user_updatedAt: true,
 
-        //  Include all trips ordered by latest first
         trips: {
           orderBy: { created_at: "desc" },
           include: {
@@ -128,7 +35,7 @@ export const getUserByIdForProfile = async (user_id) => {
               },
             },
 
-            //  Budgets → Categories → Expenses
+            // One-to-one Budget → Categories → Expenses
             budgets: {
               include: {
                 categories: {
@@ -139,7 +46,7 @@ export const getUserByIdForProfile = async (user_id) => {
               },
             },
 
-            // Share Experience → Experience Images
+            // One-to-one Share Experience → Experience Images
             share_experiences: {
               include: {
                 experience_images: true,
@@ -167,6 +74,38 @@ export const getUserByIdForProfile = async (user_id) => {
       },
     });
 
+    const totalAmountFromFirstTripToTill = await prisma.budgets.aggregate({
+      _sum: {
+        total_amount: true,
+      },
+      where: {
+        trips: {
+          user_id: user_id,
+        },
+      },
+    });
+
+    //This function is used to fetch the trips data for the profile
+    const tripsDataForUpComingAndCompletedAndCanceled = await prisma.trips.findMany({
+      where: { user_id },
+    });
+
+    const today = new Date();
+
+    const canceledTrips = tripsDataForUpComingAndCompletedAndCanceled.filter((trip) => trip.isCanceled === true).length;
+
+    const upcomingTrips = tripsDataForUpComingAndCompletedAndCanceled.filter(
+      (trip) => !trip.isCanceled && new Date(trip.start_date) > today
+    ).length;
+
+    const completedTrips = tripsDataForUpComingAndCompletedAndCanceled.filter(
+      (trip) => !trip.isCanceled && new Date(trip.end_date) < today
+    ).length;
+
+    console.log("We Upcoming trips ", upcomingTrips);
+    console.log("We Completed trips ", completedTrips);
+    console.log("We Canceled trips ", canceledTrips);
+
     // Total experiences count (non-null only)
     const totalExperiences = user.trips.filter(
       (trip) => trip.share_experiences !== null
@@ -182,20 +121,83 @@ export const getUserByIdForProfile = async (user_id) => {
         user_interest: user.user_interest,
         user_location: user.user_location,
         user_status: user.user_status,
-        user_role: user.user_role,
         user_joined: user.user_joined,
         user_updatedAt: user.user_updatedAt,
       },
       latest_trip: latestTrip, // only one (the newest)
-      all_trips: user.trips,   // all trips (sorted latest first)
+      all_trips: user.trips, // all trips (sorted latest first)
       _counts: {
         total_trips: user.trips.length,
         total_experiences: totalExperiences,
         total_images: totalImages,
+        total_amount_of_all_trips:
+        totalAmountFromFirstTripToTill?._sum?.total_amount,
+        upcomingTrips,
+        completedTrips,
+        canceledTrips
       },
     };
   } catch (error) {
     console.error("❌ Error fetching user profile:", error);
     throw objectForCustomError;
+  }
+};
+
+export const budgetDataForProfile = async (user_id) => {
+  console.log("we are at budget Data For Profile ", user_id);
+
+  try {
+    const dataForBudgetManager = await prisma.trips.findMany({
+      where: { user_id },
+      include: {
+        budgets: {
+          include: {
+            categories: {
+              include: {
+                expenses: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return dataForBudgetManager;
+  } catch (error) {
+    console.log("Error fetching budget manager data for profile:", error);
+  }
+};
+
+//Trips plans fecting from Db and sending to the backend and from backend send to the frontend in the prepare form
+export const DataForTripPlans = async (user_id) => {
+  console.log(
+    "we are in the trips plan Data for Trip plan and we get the user id ",
+    user_id
+  );
+  try {
+    const tripPlansData = await prisma.trips.findMany({
+      where: { user_id },
+    });
+    return tripPlansData;
+  } catch (DataForTripPlans) {}
+};
+
+export const tripPlanCancelService = async (tripId) => {
+  try {
+    const setDataForDB = await prisma.trips.update({
+      where: { trip_id: tripId },
+      data: { isCanceled: true },
+    });
+    return setDataForDB;
+  } catch (tripPlanCancelServiceError) {
+    console.log(tripPlanCancelServiceError);
+  }
+};
+export const userProfileLogOut = async (user_id) => {
+  try {
+    await prisma.user_refresh_token.delete({
+      where: { user_id },
+    });
+  } catch (userProfileLogOutError) {
+    console.log("We get error during the logout ", userProfileLogOutError);
   }
 };

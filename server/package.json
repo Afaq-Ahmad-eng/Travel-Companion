@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
+    "tunnel": "ngrok http 3001",
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
