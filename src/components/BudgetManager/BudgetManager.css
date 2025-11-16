@@ -63,6 +63,26 @@
 }
 .summary input:focus { outline: none; border-color: #0d6efd; }
 
+.trip-select{
+  display: flex;
+  gap: 1.5rem;
+}
+
+.trip-select select{
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  border: 1px solid #ced4da;
+  width: 240px;
+  transition: border-color 0.3s;
+}
+
+.start-date-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* ========== Chart Section ========== */
 .chart-container {
   margin-bottom: 2rem;

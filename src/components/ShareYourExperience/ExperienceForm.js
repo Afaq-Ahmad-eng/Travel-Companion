@@ -8,8 +8,10 @@ import Swal from "sweetalert2";
 import "./ExperienceForm.css";
 import { useState, useEffect, useRef } from "react";
 
-const shareExperienceApi = "http://localhost:3001/share/experience";
-const fatchLatestTripApi = "http://localhost:3001/share/fetch-latest-trip";
+const host = window.location.hostname;
+
+const shareExperienceApi = `http://${host}:3001/share/experience`;
+const fatchLatestTripApi = `http://${host}:3001/share/fetch-latest-trip`;
 
 const ExperienceForm = () => {
   const [showAuthForm, setShowAuthForm] = useState({
@@ -18,11 +20,12 @@ const ExperienceForm = () => {
     pendingValues: null,
   });
 
+  const [userDataForReFilling, setUserDataForReFilling] = useState({});
+  const [refetchLatestTripData, setRefetchLatestTripData] = useState(false);
 
   const formikRef = useRef(null);
   const navigate = useNavigate();
 
-  
   // Reopen AuthForm event listener
   useEffect(() => {
     const handleShowAuthFormAgain = (event) => {
@@ -44,14 +47,18 @@ const ExperienceForm = () => {
       const restoredData = event.detail;
       if (formikRef.current && restoredData) {
         formikRef.current.setFieldValue("title", restoredData.title || "");
-        formikRef.current.setFieldValue("description", restoredData.description || "");
+        formikRef.current.setFieldValue(
+          "description",
+          restoredData.description || ""
+        );
         formikRef.current.setFieldValue("blog", restoredData.blog || "");
         formikRef.current.setFieldValue("rating", restoredData.rating || null);
         formikRef.current.setFieldValue("images", restoredData.images || []);
       }
     };
     window.addEventListener("restoreExperienceForm", handleRestoreForm);
-    return () => window.removeEventListener("restoreExperienceForm", handleRestoreForm);
+    return () =>
+      window.removeEventListener("restoreExperienceForm", handleRestoreForm);
   }, []);
 
   useEffect(() => {
@@ -60,24 +67,57 @@ const ExperienceForm = () => {
         const response = await fetchDataFromServer(fatchLatestTripApi);
         console.log("Latest trip data fetched:", response.data);
         if (formikRef.current && response.data) {
-          formikRef.current.setFieldValue("title", response.data.trip_title || "");
+          formikRef.current.setFieldValue(
+            "title",
+            response?.data.trip_title || ""
+          );
         }
-
       } catch (error) {
         console.error("Error fetching latest trip data:", error);
+        if (error?.response?.data?.showLoginAndRegistrationForm) {
+          const errData = error?.response?.data || {};
+          const errorMsg = errData.message || "Unexpected error occurred.";
+          console.log("Show data ", errData.isUserRegister);
 
-        Swal.fire({
-          title: "Error",
-          text: error?.response?.data?.message || "Could not fetch latest trip data.",
-          icon: "error",
-          confirmButtonText: "Go to Home Page",
-        }).then(() => {
-          navigate("/");
-        });
+          Swal.fire({
+            title: "Access Denied",
+            text: errorMsg,
+            icon: "warning",
+            confirmButtonText: errData.isExperienceTitleExist
+              ? "Click to continue"
+              : "Continue to Login",
+            confirmButtonColor: "#3085d6",
+            background: "#ffffff",
+            color: "#333",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              localStorage.setItem(
+                "pendingExperienceForm",
+                JSON.stringify(userDataForReFilling)
+              );
+              setShowAuthForm({
+                show: true,
+                mode: errData.isUserRegister === false ? "register" : "login",
+                pendingValues: userDataForReFilling,
+              });
+            }
+          });
+        } else if (error?.response?.data?.showNavigation) {
+          Swal.fire({
+            title: "Error",
+            text:
+              error?.response?.data?.message ||
+              "Could not fetch latest trip data.",
+            icon: "error",
+            confirmButtonText: "Go to Home Page",
+          }).then(() => {
+            navigate("/");
+          });
+        }
       }
     };
     latestTripData();
-  }, [navigate]);
+  }, [navigate, userDataForReFilling, refetchLatestTripData]);
 
   const initialValues = {
     title: "",
@@ -87,16 +127,19 @@ const ExperienceForm = () => {
     rating: null,
   };
 
-
-  const handleExperienceSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleExperienceSubmit = async (
+    values,
+    { setSubmitting, resetForm }
+  ) => {
     try {
+      setUserDataForReFilling(values);
       const response = await sendDataToServer(shareExperienceApi, values);
       Swal.fire({
         title: response.message,
         text: `Thank you! Your experience has been shared successfully.`,
         icon: "success",
         timer: 1500,
-        timerProgressBar: true
+        timerProgressBar: true,
         // confirmButtonText: "Awesome!",
         // confirmButtonColor: "#3085d6",
         // background: "#ffffff",
@@ -104,28 +147,16 @@ const ExperienceForm = () => {
       });
       resetForm();
     } catch (error) {
-      const errData = error?.response?.data || {};
-      const errorMsg = errData.message || "Unexpected error occurred.";
+      console.log("we get error at share experience  ", error);
 
       Swal.fire({
-        title: "Access Denied",
-        text: errorMsg,
-        icon: "warning",
-        confirmButtonText: errData.isExperienceTitleExist
-          ? "Click to continue"
-          : "Continue to Login",
+        icon: "error",
+        title: "Failed to Share Experience",
+        text:
+          error?.message ||
+          "Something went wrong while sharing your experience. Please try again later.",
         confirmButtonColor: "#3085d6",
-        background: "#ffffff",
-        color: "#333",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          localStorage.setItem("pendingExperienceForm", JSON.stringify(values));
-          setShowAuthForm({
-            show: true,
-            mode: errData.isUserRegister === false ? "register" : "login",
-            pendingValues: values,
-          });
-        }
+        confirmButtonText: "Click to Correct and Continue",
       });
     } finally {
       setSubmitting(false);
@@ -181,7 +212,11 @@ const ExperienceForm = () => {
                       setFieldTouched("title", true, false);
                     }}
                   />
-                  <ErrorMessage name="title" component="div" className="error" />
+                  <ErrorMessage
+                    name="title"
+                    component="div"
+                    className="error"
+                  />
                 </div>
 
                 <div className="form-group">
@@ -224,7 +259,8 @@ const ExperienceForm = () => {
 
                 <div className="form-group">
                   <label htmlFor="images">
-                    Upload Photos (max 20) <span className="required-field">*</span>
+                    Upload Photos (max 20){" "}
+                    <span className="required-field">*</span>
                   </label>
                   <input
                     id="images"
@@ -245,12 +281,17 @@ const ExperienceForm = () => {
                     }}
                   />
                   <small>{values.images.length} images selected</small>
-                  <ErrorMessage name="images" component="div" className="error" />
+                  <ErrorMessage
+                    name="images"
+                    component="div"
+                    className="error"
+                  />
                 </div>
 
                 <div className="form-group">
                   <label>
-                    Rate Your Experience <span className="required-field">*</span>
+                    Rate Your Experience{" "}
+                    <span className="required-field">*</span>
                   </label>
                   <div className="stars">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -263,11 +304,19 @@ const ExperienceForm = () => {
                       </span>
                     ))}
                   </div>
-                  <ErrorMessage name="rating" component="div" className="error" />
+                  <ErrorMessage
+                    name="rating"
+                    component="div"
+                    className="error"
+                  />
                 </div>
 
                 <div className="form-actions">
-                  <button type="submit" className="submit-button" disabled={isSubmitting}>
+                  <button
+                    type="submit"
+                    className="submit-button"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? "Submitting..." : "Submit Experience"}
                   </button>
                 </div>
@@ -294,7 +343,12 @@ const ExperienceForm = () => {
           mode={showAuthForm.mode}
           onLoginSuccess={() => {
             // pending values are restored via "restoreExperienceForm" event
-            setShowAuthForm({ show: false, mode: "login", pendingValues: null });
+            setShowAuthForm({
+              show: false,
+              mode: "login",
+              pendingValues: null,
+            });
+            setRefetchLatestTripData((prev) => !prev);
           }}
         />
       )}

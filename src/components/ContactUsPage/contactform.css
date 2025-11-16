@@ -35,23 +35,17 @@
 }
 
 @keyframes floatBackground {
-  0% {
-    background-position: 0% 0%;
-  }
-  50% {
-    background-position: 100% 100%;
-  }
-  100% {
-    background-position: 0% 0%;
-  }
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
 }
 
 .form-container h1 {
   text-align: center;
   font-size: 2.4rem;
   margin-bottom: 2rem;
-  color: #161e3d; /* darker and richer blue */
-  font-weight: 900; /* very bold */
+  color: #161e3d;
+  font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
   text-shadow: 2px 2px 6px rgba(26, 42, 108, 0.6);
@@ -71,7 +65,6 @@
   box-shadow: 0 2px 8px rgba(74, 144, 226, 0.7);
 }
 
-
 .form-container form {
   display: flex;
   flex-direction: column;
@@ -90,8 +83,10 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* 🔹 Shared input styles */
 .form-container input,
-.form-container textarea {
+.form-container textarea,
+.form-container select {
   font-size: 1rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -100,17 +95,59 @@
   background-color: #fefefe;
   transition: all 0.3s ease;
   resize: vertical;
+  width: 100%;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .form-container input:hover,
-.form-container textarea:hover {
+.form-container textarea:hover,
+.form-container select:hover {
   border-color: #4a90e2;
   box-shadow: 0 0 8px rgba(74, 144, 226, 0.1);
 }
 
 .form-container input:focus,
-.form-container textarea:focus {
+.form-container textarea:focus,
+.form-container select:focus {
+  border-color: #4a90e2;
+  background-color: #fff;
+  box-shadow: 0 0 0 5px rgba(74, 144, 226, 0.15);
+  outline: none;
+}
+
+/* 🎯 Custom dropdown arrow */
+.form-container select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%234a90e2' height='20' viewBox='0 0 24 24' width='20'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  cursor: pointer;
+}
+
+/* 🗂️ File input styling */
+.form-container input[type="file"] {
+  display: block;
+  font-size: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.8rem;
+  background-color: #fefefe;
+  transition: all 0.3s ease;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-container input[type="file"]:hover {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.1);
+}
+
+.form-container input[type="file"]:focus {
   border-color: #4a90e2;
   background-color: #fff;
   box-shadow: 0 0 0 5px rgba(74, 144, 226, 0.15);
@@ -155,7 +192,33 @@
   box-shadow: 0 12px 24px rgba(74, 144, 226, 0.5), 0 0 12px rgba(255, 255, 255, 0.2);
 }
 
-/* Fade in animation */
+/* 🔴 Formik validation errors */
+.error {
+  color: #d93025;
+  font-size: 0.9rem;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.button-spinner {
+  border: 2px solid #f3f3f3; /* Light gray */
+  border-top: 2px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fade-in animation */
 @keyframes fadeIn {
   from {
     opacity: 0;

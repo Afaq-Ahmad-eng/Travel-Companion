@@ -12,7 +12,7 @@ export default function Searchbar() {
 
 
 
-  // 🔍 Filter destinations safely
+  // Filter destinations safely
   useEffect(() => {
     if (query.trim() === "") {
       setSuggestions([]);
@@ -36,7 +36,7 @@ export default function Searchbar() {
     setSuggestions(filtered.slice(0, 5)); // show top 5
   }, [query]);
 
-  // 🖱️ Close suggestions when clicking outside
+  //Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -75,7 +75,7 @@ export default function Searchbar() {
   };
 
   return (
-    <div className="search-bar-container" ref={searchRef}>
+    <div id="search-section" className="search-bar-container" ref={searchRef}>
       <form className="search-bar" onSubmit={handleSubmit}>
         <div className="search-input-wrapper">
           <input

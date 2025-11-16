@@ -2,7 +2,7 @@
 
 import Swal from 'sweetalert2';
 
-import { Routes, Route, useLocation,useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation,useNavigate, Outlet } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion'; 
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -17,10 +17,11 @@ import BudgetManager from './components/BudgetManager/BudgetManager';
 import ExperienceForm from './components/ShareYourExperience/ExperienceForm';
 import Phrasebook from './components/PhraseBook/Phrasebook';
 import Profile from './Routes/Profile/Profile';
-import AdminDashboard from './Routes/AdminDashboard/AdminDashboard';
 import DestinationDetail from './components/SearchBar/DestinationDetail';
+import AdminRoutes from './Routes/AdminRoutes/AdminRoutes.js';
 import { useEffect, useState } from 'react';
 import {fetchDataFromServer} from './utils/api.js'
+import AuthForm from "./components/AuthForm/AuthForm";
 
 const apiForBudgetManagerStatusChecker = "http://localhost:3001/budget/check";
 
@@ -30,6 +31,9 @@ function App() {
 
   //state to hide the navbar on the admin panel
   const [closeNavBar, setCloseNavBar] = useState(false)
+
+  // state to show auth modal globally
+  const [authModal, setAuthModal] = useState({ show: false, mode: "login" });
 
   useEffect(()=>{
     const checkBudgetManagerStatus = async () => {
@@ -43,8 +47,8 @@ function App() {
         // Key for this specific trip
         const alertKey = `tripAlertShown_${trip_id}`;
 
-         // 🔹 CASE 1: Trip starts soon → show alert only once
-        // ✅ show only once before trip starts
+         //CASE 1: Trip starts soon → show alert only once
+        // show only once before trip starts
         if (showUpcomingTripAlert && !localStorage.getItem(alertKey)) {
           await Swal.fire({
             title: "Upcoming Trip! 🌍",
@@ -53,11 +57,11 @@ function App() {
             showCancelButton: true,
             confirmButtonText: "Go and plan budget!",
             cancelButtonText: "Maybe later",
-            allowOutsideClick: false, // ❌ prevent closing by clicking outside
-            allowEscapeKey: false,    // ❌ prevent closing with ESC
+            allowOutsideClick: false, // prevent closing by clicking outside
+            allowEscapeKey: false,    // prevent closing with ESC
             reverseButtons: true,     // Swap order for better UX
           }).then((result) => {
-            // ✅ Mark alert as shown so it doesn’t show again
+            // Mark alert as shown so it doesn’t show again
             localStorage.setItem(alertKey, "true");
 
             if (result.isConfirmed) {
@@ -83,13 +87,24 @@ function App() {
     //we add these boolean values later to the navigate function 
   },[navigate,location]);
 
-  const hideNavbarRoutes = ['/budget', '/share-experience', '/translate'];
+  useEffect(() => {
+    const handler = (e) => {
+      const mode = e?.detail?.mode || "login";
+      setAuthModal({ show: true, mode });
+    };
+    window.addEventListener("showAuthFormAgain", handler);
+    return () => window.removeEventListener("showAuthFormAgain", handler);
+  }, []);
 
+  const closeAuth = () => setAuthModal({ show: false, mode: "login" });
+
+  const hideNavbarRoutes = ['/budget', '/share-experience', '/translate'];
+  const hideNavBar = true;
   return (
     <div className="App">
-      {(!hideNavbarRoutes.includes(location.pathname) && !closeNavBar)  && <Navbar />}
+      {(!hideNavbarRoutes.includes(location.pathname) && !closeNavBar && hideNavBar)  && <Navbar />}
 
-      {/* ✅ Wrap Routes in AnimatePresence for animation support */}
+      {/* Wrap Routes in AnimatePresence for animation support */}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
@@ -100,12 +115,31 @@ function App() {
           <Route path="/budget" element={<BudgetManager />} />
           <Route path="/share-experience" element={<ExperienceForm />} />
           <Route path="/translate" element={<Phrasebook />} />
-          <Route path="/Profile" element={<Profile setCloseNavBar={setCloseNavBar}/>} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          {/* ✅ Add Destination Detail Route - Navbar will be hidden here */}
+          <Route path="/Profile/*" element={<Profile setCloseNavBar={setCloseNavBar}/>} />
+          {/* <Route path="/admin-dashboard" element={<AdminDashboard />} /> */}
+          {/* Add Destination Detail Route - Navbar will be hidden here */}
           <Route path="/destination/:id" element={<DestinationDetail />} />
+          {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
+          <Route path='/AdminDashboard/*' element={<AdminRoutes setCloseNavBar={setCloseNavBar}/>}/>
+          {/* <Route path="/AdminDashboard/*" element={<AdminDashboard setCloseNavBar={setCloseNavBar}/>} /> */}
+          
         </Routes>
+        <Outlet/>
       </AnimatePresence>
+
+      {/* Mount AuthForm at app root so it works from any route including "/" */}
+      {authModal.show && (
+        <AuthForm
+          onClose={closeAuth}
+          mode={authModal.mode}
+          onLoginSuccess={() => {
+            // your existing refresh logic
+            closeAuth();
+            // e.g., refetch profile or navigate if needed
+          }}
+          showAuthSwitchText={true}
+        />
+      )}
     </div>
   );
 }

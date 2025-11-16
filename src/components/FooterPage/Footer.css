@@ -16,7 +16,7 @@
 /* Social Media Icons */
 .top i {
     color: white;
-    font-size: 2rem;  /* ✅ Fixed incorrect property */
+    /* font-size: 2rem;   */
     margin-left: 1rem;
 }
 
@@ -41,16 +41,36 @@
 /* Bottom Section Headings */
 .bottom h4 {
     font-size: 1.3rem;
-    padding: 1rem 0 .8rem 0;  /* ✅ Fixed "o" typo (should be "0") */
 }
 
 /* Links inside Bottom Section */
 .bottom a {
     text-decoration: none;
     color: #fafafa;
-    padding-bottom: 0.4rem;
+    padding-bottom: 0.6rem;
     font-size: 1.1rem;
 }
+
+.bottom #first-part button{
+    all: unset;
+    text-align: start;
+    margin: 5px;
+    background-color: transparent;
+    color: #fafafa;
+    cursor: pointer;
+}
+.bottom #second-part{
+   margin: 5px;
+}
+
+.bottom #second-part .footer-link-btn{
+    all: unset;
+    background-color: transparent;
+    cursor: pointer;
+    margin: 5px;
+}
+
+
 
 /* Responsive Design for Small Screens */
 @media screen and (max-width: 850px) {

@@ -57,12 +57,27 @@ export default function Home() {
       localStorage.setItem('hasSeenPromoToasts', 'true');
     }, 25000); // 25 seconds
 
+    
     // Cleanup function to clear timers if the component unmounts
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
     };
   }, []);
+
+  const handleScrollToSearch = () => {
+  const searchSection = document.getElementById("search-section");
+  if (searchSection) {
+    const navbarHeight = document.querySelector("nav")?.offsetHeight || 40; 
+    const elementPosition = searchSection.getBoundingClientRect().top + window.scrollY;
+    const offsetPosition = elementPosition - navbarHeight; 
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  }
+};
 
   // Function to close Toast 1 manually
   const closeToast1 = () => {
@@ -108,7 +123,7 @@ export default function Home() {
         title="Your Journey your story"
         text="Choose your favorite destination"
         buttontext="Travel Plan"
-        url="/services"
+        onClick={handleScrollToSearch}
         btnclass="show"
       />
       <SearchBar />

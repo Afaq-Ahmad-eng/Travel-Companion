@@ -68,24 +68,25 @@ export const validSchema = yup.object({
       RegExpForValidation,
       "Invalid input: only letters allowed; no numbers or symbols."
     )
-    .test("description", "Invalid Description", function (description) {
-      const wordsCount = description.trim().split(/\s+/).length;
-      if (wordsCount < 10) {
-        console.log(`word count is ${wordsCount}`);
-        return this.createError({
-          message: `Too short. Minimum 10 words (currently ${wordsCount} words)`,
-        });
-      }
-      if (wordsCount > 100) {
-        return this.createError({
-          message: `Too long. Maximum 100 words. (currently ${wordsCount} words)`,
-        });
-      }
-        return true;
-    })
-    .test("description", "Description must contain valid English words.", (val) => {
-      return isEnglishWords(val);
-    }),
+    // .test("description", "Invalid Description", function (description) {
+    //   const wordsCount = description.trim().split(/\s+/).length;
+    //   if (wordsCount < 10) {
+    //     console.log(`word count is ${wordsCount}`);
+    //     return this.createError({
+    //       message: `Too short. Minimum 10 words (currently ${wordsCount} words)`,
+    //     });
+    //   }
+    //   if (wordsCount > 100) {
+    //     return this.createError({
+    //       message: `Too long. Maximum 100 words. (currently ${wordsCount} words)`,
+    //     });
+    //   }
+    //     return true;
+    // })
+    // .test("description", "Description must contain valid English words.", (val) => {
+    //   return isEnglishWords(val);
+    // }),
+    ,
     blog: yup.string().notRequired(),
   images: yup
     .array()

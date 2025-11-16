@@ -1,0 +1,223 @@
+.tripsContainer {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1f2937;
+  text-align: center;
+}
+
+.filterButtons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filterButton {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  background-color: #e5e7eb;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterButton:hover {
+  background-color: #d1d5db;
+}
+
+.filterButton.active {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+}
+
+.tableContainer {
+  overflow-x: auto;
+  border-radius: 8px;
+  
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+}
+
+.table th,
+.table td {
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+.table tr:hover {
+  background-color: #f9fafb;
+}
+
+.cancelButton {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+.cancelButton:hover {
+  background-color: #dc2626;
+}
+
+.noData {
+  text-align: center;
+  padding: 16px;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* Status Badges */
+.statusBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.statusUpcoming {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.statusActive {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.statusCompleted {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.statusCanceled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* ============================= */
+/* 📱 RESPONSIVE DESIGN          */
+/* ============================= */
+
+/* For tablets (<= 992px) */
+@media (max-width: 992px) {
+  .tripsContainer {
+    padding: 16px;
+  }
+
+  .heading {
+    font-size: 1.3rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* For mobile devices (<= 768px) */
+@media (max-width: 768px) {
+  .filterButtons {
+    gap: 8px;
+  }
+
+  .filterButton {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .cancelButton {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* For very small screens (<= 576px) — switch to card layout */
+@media (max-width: 576px) {
+  .table {
+    display: none;
+  }
+
+  .cardList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tripCard {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    padding: 14px;
+  }
+
+  .tripCard h4 {
+    font-size: 1rem;
+    color: #1f2937;
+    margin-bottom: 8px;
+  }
+
+  .tripCard p {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 6px;
+  }
+
+  .tripCard .status {
+    font-weight: 600;
+    color: #2563eb;
+  }
+
+  .tripCard .cancelButton {
+    margin-top: 8px;
+    width: 100%;
+  }
+}

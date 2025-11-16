@@ -32,3 +32,35 @@
   color: #fff !important;
   font-weight: bold;
 }
+
+.navLink {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* optional: make it fill the <li> area */
+  padding: 8px 12px;
+}
+
+.sidebar {
+  width: 220px;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%); /* hide sidebar */
+    z-index: 999;
+    border-radius: 0;
+  }
+
+  .show {
+    transform: translateX(0); /* slide in */
+  }
+}

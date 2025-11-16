@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./RMVPINKPK.css";
 import {
   FaUsers,
@@ -21,6 +22,38 @@ import {
 
 const RMVPINKPK = () => {
   const [currentTimeframe, setCurrentTimeframe] = useState("this-month");
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const scrollTarget = params.get("scroll");
+    const tab = params.get("tab");
+
+    // If we got a scroll target
+    if (scrollTarget) {
+      const target = document.getElementById(scrollTarget);
+      if (target) {
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: "smooth" });
+        }, 300); // wait a bit for page render
+      }
+    }
+
+    // If a tab is specified
+    if (tab) {
+      setCurrentTimeframe(tab);
+    }
+  }, [location]);
+
+  // Also listen for custom "changeTab" events (for same-page navigation)
+  useEffect(() => {
+    const handleTabChange = (event) => {
+      setCurrentTimeframe(event.detail);
+    };
+    window.addEventListener("changeTab", handleTabChange);
+    return () => window.removeEventListener("changeTab", handleTabChange);
+  }, []);
 
   //  data with traveler type info
   const placesData = {
@@ -283,7 +316,7 @@ const RMVPINKPK = () => {
   };
 
   return (
-    <div className="rmvpin-kpk-container">
+    <div className="rmvpin-kpk-container" id="rmvpk-section">
       <div className="container">
         <div className="section-header">
           <div className="header-content">

@@ -7,18 +7,24 @@ const WeatherWidget = ({ coordinates, destinationName }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log("We get the cordinates ",coordinates);
-  
-
   useEffect(() => {
     const fetchWeather = async () => {
       try {
         setLoading(true);
-        
+        const API_KEY = '19e05d2e461adfec26c56a32f754c18a';
         const response = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lng}&appid=${API_KEY}&units=metric`
+          `https://api.openweathermap.org/data/2.5/weather`,
+          {
+            //we set the parameters like this 
+            params: {
+              lat: coordinates.lat,
+              lon: coordinates.lng,
+              appid: API_KEY,
+              units: "metric",
+            },
+            withCredentials: false, // Disable credentials to avoid CORS issue
+          }
         );
-        
         setWeather(response.data);
         setError(null);
       } catch (err) {
@@ -31,6 +37,8 @@ const WeatherWidget = ({ coordinates, destinationName }) => {
 
     fetchWeather();
   }, [coordinates.lat, coordinates.lng]);
+
+
 
   if (loading) {
     return (

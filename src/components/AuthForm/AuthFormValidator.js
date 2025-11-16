@@ -1,6 +1,5 @@
 // internal modules
 import {
-  isEnglishWords,
   RegExpForValidation,
 } from "../ShareYourExperience/ExperienceFormValidator";
 //Yup is library which we use for the validation
@@ -34,19 +33,6 @@ export const validSchema = (isLogin) =>
       .string()
       .required("Email is required")
       .email("Invalid email format"),
-    interest: isLogin
-      ? yup.string().notRequired()
-      :yup
-      .string()
-      .required("Interest area's is required")
-      .matches(RegExpForValidation, "Enter A Valid Interest area's")
-      .test(
-        "interest",
-        "interest area's must use valid English words (e.g., 'Mountain, hiking etc').",
-        (val) => {
-          return isEnglishWords(val);
-        }
-      ),
       location: isLogin
       ? yup.string().notRequired()
       :yup 

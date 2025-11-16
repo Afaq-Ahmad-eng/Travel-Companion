@@ -1,11 +1,10 @@
-import React from 'react';
 import { motion } from 'framer-motion'; // ✅ Import motion
 import Hero from '../components/HeroSection/Hero';
 import heroImage from '../Assets/13.jpg';
 import Footer from '../components/FooterPage/Footer';
 import Contactform from '../components/ContactUsPage/Contactform';
 
-// ✅ Modern animation variant
+// Modern animation variant
 const pageVariants = {
   initial: {
     opacity: 0,

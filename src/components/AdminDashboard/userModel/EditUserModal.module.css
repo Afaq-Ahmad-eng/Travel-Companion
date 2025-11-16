@@ -1,0 +1,168 @@
+.authOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  padding: 1rem;
+}
+
+.authModal {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 700px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e9ecef;
+  padding: 1rem 1.25rem;
+  background-color: #f8f9fa;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.modalTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #0d6efd;
+  margin: 0;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #6c757d;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.closeButton:hover {
+  color: #dc3545;
+  transform: scale(1.1);
+}
+
+.form {
+  padding: 1.5rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 500;
+  color: #212529;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.authInput {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  transition: all 0.2s ease-in-out;
+}
+
+.authInput:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+  outline: none;
+}
+
+.error {
+  font-size: 0.8rem;
+  color: #dc3545;
+  margin-top: 0.2rem;
+}
+
+.formError {
+  grid-column: span 2;
+  color: #dc3545;
+  text-align: center;
+  background-color: #f8d7da;
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #f5c2c7;
+}
+
+.buttonGroup {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.authBtn {
+  background-color: #0d6efd;
+  border: none;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.authBtn:hover {
+  background-color: #0b5ed7;
+}
+
+.cancelBtn {
+  background-color: #6c757d;
+  border: none;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cancelBtn:hover {
+  background-color: #5c636a;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .authModal {
+    max-width: 95%;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

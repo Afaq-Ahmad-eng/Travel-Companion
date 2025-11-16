@@ -1,7 +1,7 @@
-
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import styles from './EditUserModal.module.css';
 import { decryptData } from '../../../utils/secure';
+import { editSchema } from './EditUserModalValidator';
 
 const EditUserModal = ({
   selectedUser,
@@ -9,9 +9,11 @@ const EditUserModal = ({
   handleSave,
   saving,
   error,
-  editSchema
 }) => {
-  return (
+
+  console.log("We are at frontend and in the edit user modal ",selectedUser);
+
+return (
     <div
       role="dialog"
       aria-modal="true"
@@ -38,16 +40,23 @@ const EditUserModal = ({
           initialValues={{
             user_name: selectedUser.user_name || "",
             user_email: selectedUser.user_email || "",
-            user_role: selectedUser.user_role || "user",
             user_status: selectedUser.user_status || "active",
+            user_location: selectedUser.user_location || "",
+            user_password: selectedUser.user_password || "",
             user_phoneno: decryptData(selectedUser.user_phoneno) || "",
           }}
           validationSchema={editSchema}
           onSubmit={async (values) => {
+            console.log("We are at frontend and in the edit user modal onSubmit ",values);
+            values.user_id = selectedUser.user_id;
             await handleSave(values);
           }}
         >
-          {({ isSubmitting }) => (
+          {({ 
+            isSubmitting,
+            handleChange,
+            setFieldTouched
+           }) => (
             <Form className={styles.form}>
               <div className={styles.formGrid}>
                 <div className={styles.formField}>
@@ -56,6 +65,10 @@ const EditUserModal = ({
                     <Field 
                       name="user_name" 
                       className={styles.authInput} 
+                      onChange={(e)=>{
+                      handleChange(e);
+                      setFieldTouched("user_name", true, false);
+                      }}
                     />
                     <ErrorMessage 
                       name="user_name" 
@@ -72,6 +85,10 @@ const EditUserModal = ({
                       name="user_email" 
                       type="email" 
                       className={styles.authInput} 
+                      onChange={(e)=>{
+                      handleChange(e);
+                      setFieldTouched("user_email", true, false);
+                      }}
                     />
                     <ErrorMessage 
                       name="user_email" 
@@ -87,6 +104,10 @@ const EditUserModal = ({
                     <Field 
                       name="user_phoneno" 
                       className={styles.authInput} 
+                      onChange={(e)=>{
+                      handleChange(e);
+                      setFieldTouched("user_phoneno", true, false);
+                      }}
                     />
                     <ErrorMessage 
                       name="user_phoneno" 
@@ -98,23 +119,42 @@ const EditUserModal = ({
 
                 <div className={styles.formField}>
                   <label className={styles.label}>
-                    Role
+                    Location
                     <Field 
-                      name="user_role" 
-                      as="select" 
-                      className={styles.authInput}
-                    >
-                      <option value="user">User</option>
-                      <option value="moderator">Moderator</option>
-                      <option value="admin">Admin</option>
-                    </Field>
+                      name="user_location" 
+                      className={styles.authInput} 
+                      onChange={(e)=>{
+                      handleChange(e);
+                      setFieldTouched("user_location", true, false);
+                      }}
+                    />
                     <ErrorMessage 
-                      name="user_role" 
+                      name="user_location" 
                       component="div" 
                       className={styles.error} 
                     />
                   </label>
                 </div>
+                   
+                   <div className={styles.formField}>
+                  <label className={styles.label}>
+                    Password
+                    <Field 
+                      name="user_password" 
+                      className={styles.authInput} 
+                      onChange={(e)=>{
+                      handleChange(e);
+                      setFieldTouched("user_password", true, false);
+                      }}
+                    />
+                    <ErrorMessage 
+                      name="user_password" 
+                      component="div" 
+                      className={styles.error} 
+                    />
+                  </label>
+                </div>
+
 
                 <div className={styles.formField}>
                   <label className={styles.label}>
@@ -123,9 +163,13 @@ const EditUserModal = ({
                       name="user_status" 
                       as="select" 
                       className={styles.authInput}
+                      onChange={(e)=>{
+                      handleChange(e);
+                      setFieldTouched("user_status", true, false);
+                      }}
                     >
                       <option value="active">Active</option>
-                      <option value="suspended">Suspended</option>
+                      <option value="admin">Admin</option>
                       <option value="pending">Pending</option>
                     </Field>
                     <ErrorMessage 

@@ -8,9 +8,9 @@
   padding: 0 30px;
   box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.1);
   width: 95%;
-  height: 80px;
   border-radius: 13px;
   position: fixed;
+  min-height: 60px;
   top: 3%;
   left: 50%;
   transform: translate(-50%);
@@ -34,7 +34,7 @@
 /* LOGO */
 .logo {
   color: #fff;
-  font-size: 2rem;
+  font-size: 1.4rem;
   cursor: pointer;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   font-weight: 700;
@@ -45,7 +45,7 @@
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Logo turns dark when scrolled */
+/* Logo turns white when scrolled */
 .navbaritems.scrolled .logo {
   color: #ffffff;
 }
@@ -97,14 +97,14 @@
 }
 
 .menu-icons i {
-  color: #ffffff;
+  color: #000000;
   font-size: 1.5rem;
   transition: color 0.3s ease;
 }
 
 /* Hamburger icon turns black when scrolled */
 .navbaritems.scrolled .menu-icons i {
-  color: #ffffff;
+  color: #000000;
 }
 
 /* BUTTON */
@@ -123,7 +123,22 @@
 
 .btn-link:hover {
   background-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
+}
+
+.nav-btn {
+  background-color: transparent;
+  color: #fff;
+  padding: 0.7rem 1rem;
+  border-radius: 5px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  /* transform: translateY(-2px); */
 }
 
 /* When on profile or admin dashboard */
@@ -136,19 +151,27 @@
   color: #000000 !important;
 }
 
+.dark-logo.scrolled{
+  color: #fff;
+}
+
 .dark-link {
   color: #000000 !important;
 }
 
+.dark-link.scrolled{
+  color: #fff;
+}
+
 .dark-link:hover {
-  color: #ffffff !important;
+  color: #000000 !important;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* MOBILE RESPONSIVE STYLES */
 @media screen and (max-width: 850px) {
   .navbaritems {
-    z-index: 99;
+    z-index: 999;
   }
 
   .nav-menu {
@@ -156,6 +179,7 @@
     flex-direction: column;
     justify-content: flex-start;
     background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
     backdrop-filter: blur(10px);
     width: 100%;
     height: auto;
@@ -181,7 +205,7 @@
     border-radius: 8px;
     width: 80%;
     align-self: center;
-    color: #fff;
+    color: #ffffff;
   }
 
   .btn-link:hover {
@@ -191,7 +215,7 @@
     display: block;
     width: 100%;
     font-size: 1.2rem;
-    padding: 2rem 0;
+    padding: 1.2rem 0;
     text-align: center;
   }
 
@@ -206,7 +230,7 @@
   .nav-links-mobile {
     display: block;
     text-align: center;
-    padding: 1.5rem;
+    padding: 0.8rem;
     margin: auto;
     border-radius: 4px;
     width: 80%;
@@ -226,7 +250,12 @@
   .menu-icons {
     display: block;
   }
-  
+  .nav-btn {
+    width: 90%;
+    margin: 1rem auto;
+    display: block;
+    text-align: center;
+  }
 }
 
 

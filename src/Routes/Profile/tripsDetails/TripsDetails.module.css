@@ -2,8 +2,8 @@
   width: 100%;
   height: calc(100vh - 80px); /* leave room for navbar */
   background: #ffffff;
-  padding: 2rem;
-  margin-top: 6rem;
+  /* padding: 2rem; */
+  /* margin-top: 2rem; */
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -13,11 +13,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   border-bottom: 2px solid #eee;
   padding-bottom: 0.5rem;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.pageTitle {
+  padding-top: 25px;
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 1.5rem;
 }
 
 .backBtn {
@@ -35,7 +42,59 @@
   background: #2563eb;
 }
 
-/* ---------- Table ---------- */
+/* ---------- Filter Bar ---------- */
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filterLabel {
+  font-weight: 600;
+  color: #334155;
+}
+
+.filterButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filterBtn {
+  border: 1px solid #d3dae0;
+  background: white;
+  border-radius: 25px;
+  padding: 8px 16px;
+  font-weight: 500;
+  color: #3c4858;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.filterBtn:hover {
+  background: #e5f1ff;
+  border-color: #74b9ff;
+  color: black;
+}
+
+.activeFilter {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.totalTrips {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Table  */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -80,9 +139,9 @@
     text-align: center;
   }
 
-  .backBtn {
-    padding: 8px 14px;
-    font-size: 13px;
+  .filterBar {
+    flex-direction: column;
+    text-align: center;
   }
 
   .table th,
@@ -114,7 +173,15 @@
     padding: 8px 12px;
   }
 
-  /* ---------- Mobile: Card-style Table ---------- */
+  .filterBar {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .filterButtons {
+    justify-content: center;
+  }
+
   .table,
   .table thead,
   .table tbody,
@@ -132,7 +199,7 @@
   .table tr {
     margin-bottom: 1.2rem;
     background: #f9fafc;
-    border-left: 4px solid #3085d6; /* accent border */
+    border-left: 4px solid #3085d6;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     overflow: hidden;

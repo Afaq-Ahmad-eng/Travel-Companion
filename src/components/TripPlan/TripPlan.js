@@ -3,16 +3,24 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import TripPlanValidator from "./TripPlanValidator";
 import styles from "./TripPlan.module.css";
 import AuthForm from "../AuthForm/AuthForm";
+import { sendDataToServer } from "../../utils/api";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
+// Trips data sending api
+const host = window.location.hostname;
+
+const tripDetailsapi = `http://${host}:3001/trip/plan`;
 
 const INTEREST_OPTIONS = [
   "Hiking",
   "Historical Places",
-  "Beaches",
   "Shopping",
   "Cultural Events",
 ];
 
 const TripPlan = ({ initialDestination = "", onClose }) => {
+  const navigate = useNavigate();
   const [showAuthForm, setShowAuthForm] = useState({
     show: false,
     mode: "login",
@@ -61,11 +69,32 @@ const TripPlan = ({ initialDestination = "", onClose }) => {
               onSubmit={async (values, { setSubmitting, resetForm }) => {
                 try {
                   setSubmitting(true);
-                  console.log("Trip Plan submitted:", values);
+                  const responseOfTrip = await sendDataToServer(
+                    tripDetailsapi,
+                    values
+                  );
+                  Swal.fire({
+                    title: "Success!",
+                    text: responseOfTrip.message,
+                    icon: "success",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                  }).then(()=>{
+                    localStorage.clear();
+                    navigate('/budget')
+                  });
                   resetForm();
                   onClose && onClose();
                 } catch (err) {
-                  console.error(err);
+                  Swal.fire({
+                    title: "Error!",
+                    text:
+                      err.response?.data?.message ||
+                      "Something went wrong while submitting the trip details.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                  });
                 } finally {
                   setSubmitting(false);
                 }

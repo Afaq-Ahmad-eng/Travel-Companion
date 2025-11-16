@@ -63,9 +63,9 @@ export default function Hero(props) {
             </div>
           </div>
         ) : (
-          <a href={props.url} className={props.btnclass}>
+          <button onClick={props.onClick} className={props.btnclass}>
             {props.buttontext}
-          </a>
+          </button>
         )}
       </div>
     </div>

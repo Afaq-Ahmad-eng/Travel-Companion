@@ -1,8 +1,9 @@
 .dashboardContainer {
+  margin-top: 7rem;
   display: flex;
   background: #f8fafc;
   min-height: 100vh;
-  z-index: 100000;
+  z-index: 10000;
 }
 
 /* Main content */
@@ -204,7 +205,7 @@
   flex-wrap: wrap;
 }
 
-.viewButton, .editButton {
+.viewButton, .editButton,.tripsButton {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
@@ -240,6 +241,16 @@
   box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
 }
 
+.tripsButton{
+  background: #008080;
+  color: white;
+}
+
+.tripsButton:hover{
+  background: #057070;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+}
 /* Status and Role Badges */
 .statusBadge, .roleBadge {
   padding: 6px 12px;
@@ -347,6 +358,42 @@
   color: #0d6efd;
 }
 
+.reportsButton {
+  background-color: #1976d2;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.reportsButton:hover {
+  background-color: #1565c0;
+}
+
+.topMessage {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  font-weight: 500;
+  animation: fadeInOut 5s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+  10%, 90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .mainContent {
@@ -358,7 +405,7 @@
 @media (max-width: 768px) {
   .dashboardContainer {
     flex-direction: column;
-    margin-top: 5em;
+    
   }
   
   .mainContent {

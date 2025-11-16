@@ -1,18 +1,29 @@
-
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom"
-// import AdminDashboard from './Routes/AdminDashboard/AdminDashboard';
+// import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 // import Profile from './Routes/Profile/Profile';
+// import UserReport from '../src/components/AdminDashboard/pages/userReport/UserReport'
+// import BudgetManager from './Routes/Profile/budgetManager/BudgetManager';
+// import TripsPlan from './Routes/Profile/tripsPlain/TripsPlan';
+
+// import UserTrips from './components/AdminDashboard/pages/userTrips/UserTrips';
+
+// import AuthForm from './components/AuthForm/AuthForm';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <App />
+    {/* <UserReport/> */}
     {/* <AdminDashboard /> */}
     {/* <Profile /> */}
+    {/* <BudgetManager/> */}
+    {/* <TripsPlan/> */}
+    {/* <UserTrips /> */}
+    {/* <AuthForm /> */}
   </BrowserRouter>
 );
 

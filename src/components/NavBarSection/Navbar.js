@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { Menuitems } from "./Menuitems";
 import { FaUserPlus } from "react-icons/fa";
 import AuthForm from "../AuthForm/AuthForm";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const nav = () => {
+    navigate("/");
+  };
   const [clicked, setClicked] = useState(false);
   const [navbarScrolled, setNavbarScrolled] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(false);
@@ -29,12 +33,11 @@ export default function Navbar() {
   }, [showAuthForm]);
 
   // Detect route (profile or admin)
-  const isDarkBackgroundPage =(
+  const isDarkBackgroundPage =
     location.pathname.includes("/profile") ||
-    location.pathname.includes("/admin")   ||
+    location.pathname.includes("/admin") ||
     location.pathname.includes("/contact") ||
-    location.pathname.includes("/destination/")
-  );
+    location.pathname.includes("/destination/");
   return (
     <>
       <nav
@@ -45,16 +48,27 @@ export default function Navbar() {
         <h1
           className={`logo ${
             navbarScrolled || isDarkBackgroundPage ? "dark-logo" : ""
-          }`}
+          } ${navbarScrolled ? "scrolled" : ""}`}
+          onClick={nav}
         >
           Travel Companion
         </h1>
 
         <div className="menu-icons" onClick={handleClick}>
-          <i className={clicked ? "fas fa-times" : "fas fa-bars"}></i>
+          <i
+            className={`${clicked ? "fas fa-times" : "fas fa-bars"} ${
+              navbarScrolled || isDarkBackgroundPage || clicked
+                ? "menu-icon-white"
+                : "menu-icon-black"
+            }`}
+          ></i>
         </div>
 
-        <ul className={clicked ? "nav-menu active" : "nav-menu"}>
+        <ul
+          className={`${clicked ? "nav-menu active" : "nav-menu"} ${
+            navbarScrolled ? "scrolled" : ""
+          }`}
+        >
           {Menuitems.map((item, index) => (
             <li key={index}>
               <Link
@@ -76,10 +90,9 @@ export default function Navbar() {
                 toggleAuthForm();
                 setClicked(false);
               }}
-              className={`nav-links btn-link ${
+              className={`nav-links nav-btn ${
                 navbarScrolled || isDarkBackgroundPage ? "dark-link" : ""
               }`}
-              style={{ background: "transparent", border: "none" }}
             >
               <FaUserPlus
                 style={{ marginRight: "8px", verticalAlign: "middle" }}
