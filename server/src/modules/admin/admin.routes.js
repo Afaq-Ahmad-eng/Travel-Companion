@@ -16,9 +16,11 @@ import {
     TotalComplaintsDataForAdminDashboard,
     specificCategoryExpenses,
     tripDelete,
-    shareExperienceData
+    shareExperienceData,
+    updateAdmin,
+    updateAdminSettings
 } from "./admin.controller.js";
-import { validateUpdateUser } from "./admin.validator.js";
+// import { validateUpdateUser } from "./admin.validator.js";
 
 // import { requireAdmin } from "../../middleware/auth.js"; // uncomment if you have auth middleware
 
@@ -68,6 +70,11 @@ router.get('/user-experiences',shareExperienceData)
 router.get("/trips/:trip_id/budget",userBudgetData)
 router.get('/categories/:category_id/expnenses',specificCategoryExpenses)
 
+//update admin data
+router.get('/admin-data-for-update', updateAdmin)
+
+//admin update route
+router.put('/update/:admin_id', updateAdminSettings)
 //delete trip 
 router.delete('/trips/:trip_id/delete-trip', tripDelete)
 // Delete user

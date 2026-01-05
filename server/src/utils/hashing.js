@@ -16,6 +16,5 @@ export const verifyPassword = async (password, hashedPassword) => {
   try{
     return await argon.verify(hashedPassword, password);
   }catch(errorInVerifyPassword){
-    return res.status(401).json({ message: "Invalid token" });
-  }
+    return { message: "Invalid token" } }
 }

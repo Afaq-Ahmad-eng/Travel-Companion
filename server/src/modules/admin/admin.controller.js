@@ -1,6 +1,12 @@
 import * as adminService from "./admin.service.js";
 import { AppError } from "../../utils/AppError.js";
 import { decryptData } from "../../utils/secure.js";
+import { verifyToken } from "../../utils/tokens.js";
+
+
+import dotenv from "dotenv";
+// Load environment variables from .env file
+dotenv.config();
 
 /**
  * Controller: listUsers
@@ -13,12 +19,6 @@ import { decryptData } from "../../utils/secure.js";
  *  { data: [...users], total: number }  OR an array of users (fallback)
  */
 export const listUsers = async (req, res) => {
-  console.log("We are admin (backend) and in the listUser function ", req.user);
-  console.log(
-    "We are admin (backend) and in the listUser function and we print the query ",
-    req.query
-  );
-
   try {
     const { q = "", page = 1, limit = 50 } = req.query;
     const pageNum = Math.max(Number(page) || 1, 1);
@@ -70,7 +70,6 @@ export const listUsers = async (req, res) => {
         user_id: item.user_id,
         total_trips: item._count.trip_id
     }));
-    console.log("The total trips of a user are ", userTrips);
     paged.forEach(user => {
       const tripData = userTrips.find(ut => ut.user_id === user.user_id);
       user.total_trips = tripData ? tripData.total_trips : 0;
@@ -202,8 +201,6 @@ export const userBudgetData = async (req, res) => {
 export const specificCategoryExpenses = async (req, res, next)=> {
   try{
     const category_id = req.params.category_id;
-    console.log("we get the category id ", category_id);
-    
     const response = await adminService.specificCategoryExpenses(category_id);
 
     res.status(200).json({
@@ -262,10 +259,7 @@ export const fetchReports = async (req, res, next) => {
 //Controller for user report resolved
 
 export const userReportResolved = async (req, res, next) => {
-  console.log(
-    "we are at user report resolved controller ",
-    req.params.reportId
-  );
+
   const userReportResolved = await adminService.userReportsResloved(
     Number(req.params.reportId)
   );
@@ -280,8 +274,6 @@ export const userReportResolved = async (req, res, next) => {
  * Route: DELETE /admin/users/:id
  */
 export const deleteUser = async (req, res) => {
-  console.log("We are at the delete user controller ", req.params);
-
   try {
     const { id } = req.params;
     if (typeof adminService.deleteUserById === "function") {
@@ -305,12 +297,18 @@ export const deleteUser = async (req, res) => {
 
 export const adminLogout = async (req, res, next) => {
   try {
-    const adminId = req.admin.id;
-    await adminService.deleteAdminRefreshToken(adminId);
+    const adminId = req.admin.admin_id;
+    const response = await adminService.deleteAdminRefreshToken(adminId);
+    if(response){
+
+    res.clearCookie("admin_accessToken", { path: "/" });
+    res.clearCookie("admin_refreshToken", { path: "/" });
+
     res
       .status(200)
       .json({ success: true, message: "Admin logged out successfully." });
-  } catch (error) {
+    }
+    } catch (error) {
     console.log("Error during admin logout: ", error);
     next(new AppError("Failed to log out admin.", 500));
   }
@@ -318,7 +316,6 @@ export const adminLogout = async (req, res, next) => {
 
 //controller for fetching admin dashboard data
 export const fetchAdminDashboardData = async (req, res, next) => {
-  console.log("We are at fetch admin dashboard data controller ");
   try {
     const dashboardData = await adminService.getAdminDashboardData();
     res.status(200).json({
@@ -334,7 +331,6 @@ export const fetchAdminDashboardData = async (req, res, next) => {
 
 //users data for admin dashboard
 export const UsersDataForAdminDashboard = async (req, res, next) => {
-  console.log("We are at users data for admin dashboard controller");
   try {
     const usersData = await adminService.getAllUsersData();
     if (!usersData) {
@@ -351,7 +347,6 @@ export const UsersDataForAdminDashboard = async (req, res, next) => {
 
 //controller for trip data for admin dashboard
 export const TripDataForAdminDashboard = async (req, res, next) => {
-  console.log("We are at trip data for admin dashboard controller");
   try {
     const tripData = await adminService.getAllTripsData();
     if (!tripData) {
@@ -368,7 +363,6 @@ export const TripDataForAdminDashboard = async (req, res, next) => {
 
 //controller for complaints data for admin dashboard
 export const ComplaintsDataForAdminDashboard = async (req, res, next) => {
-  console.log("We are at complaints data for admin dashboard controller");
   try {
     const complaintsData = await adminService.getAllResolvedComplaintsData();
     if (!complaintsData) {
@@ -385,7 +379,6 @@ export const ComplaintsDataForAdminDashboard = async (req, res, next) => {
 
 //controller to find the total complaints
 export const TotalComplaintsDataForAdminDashboard = async (req, res, next) => {
-  console.log("We are at total complaints data for admin dashboard controller");
   try {
     const totalComplaintsData = await adminService.getTotalComplaintsData();
     if (!totalComplaintsData) {
@@ -402,7 +395,6 @@ export const TotalComplaintsDataForAdminDashboard = async (req, res, next) => {
 
 //controller for revenue data for admin dashboard
 export const RevenueDataForAdminDashboard = async (req, res, next) => {
-  console.log("We are at revenue data for admin dashboard controller");
   try {
     const revenueData = await adminService.getRevenueData();
     if (!revenueData) {
@@ -430,3 +422,40 @@ export const shareExperienceData = async (req,res, next)=>{
     console.log(error);
   }
 }
+
+export const updateAdmin = async (req, res, next) => {
+  try{
+      const decryptRefreshToken = decryptData(req?.cookies?.admin_refreshToken)
+      const decodeAdminToken = verifyToken(decryptRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+      const adminData = await adminService.adminDataForUpdation(decodeAdminToken.decoded.admin_id)
+      const prepareDataForUi = {
+        adminName: adminData.admin_name,
+        adminEmail: adminData.admin_email,
+        adminPhoneno: decryptData(adminData.admin_phoneno),
+        adminLocaton: adminData.admin_location,
+        adminPassword: adminData.admin_password
+      }
+      res.status(200).json({
+        success: true,
+        adminData: prepareDataForUi
+      })
+  }catch(updateAdminError){
+
+  }
+}
+
+//controller for updating admin settings
+export const updateAdminSettings = async (req, res, next) => {
+  try{
+    const adminId = req.admin.admin_id;
+    const response = await adminService.updateAdminSettingsService(Number(adminId),req.body);
+    console.log("We are check that we get response or not ", response);
+    
+    res.status(200).json({
+      message: "Admin settings updated successfully",
+      data: response
+    })
+  }catch(updateAdminSettingsError){
+    console.log(updateAdminSettingsError);
+  }
+};

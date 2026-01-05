@@ -47,7 +47,7 @@ export const getTotalTripsOfAUser = async () => {
     });
     return res;
   } catch (error) {
-    console.log("❌ We get error from getTotalTripsOfAUser ", error);
+    console.log("We get error from getTotalTripsOfAUser ", error);
   }
 };
 
@@ -561,5 +561,114 @@ export async function dataForExperience() {
   } catch (error) {
     console.error("Error fetching shared experiences:", error);
     return [];
+  }
+}
+
+export async function adminDataForUpdation(adminId){
+  try{
+    const result = prisma.admin.findUnique({
+      where: { admin_id: adminId},
+      select:{
+        admin_name: true,
+        admin_email: true,
+        admin_password: true,
+        admin_phoneno: true,
+        admin_location: true 
+      }
+    })
+    return result;
+  }catch(adminDataForUpdationError){
+    console.log("We get error from admin Data For Updation ", adminDataForUpdationError);
+  }
+}
+
+export async function updateAdminSettingsService(adminId, updates = {}, next) {
+  // Fetch existing admin
+  try{
+    
+    const existingAdmin = await prisma.admin.findUnique({
+      where: { admin_id: adminId },
+    });
+    if (!existingAdmin) throw new AppError("Admin not found");
+    // Allowed fields
+    const updatedDataComingFromFrontend = {
+      admin_name: updates.adminName,
+      admin_email: updates.email,
+      admin_location: updates.location,
+      admin_password: updates.password,
+      admin_phoneno: updates.phone,   
+    };
+    const allowed = [
+      "admin_name",
+      "admin_email",
+      "admin_location",
+      "admin_password",
+      "admin_phoneno",
+    ];
+    // Filter only allowed fields
+    const data = {};
+    for (const key of Object.keys(updatedDataComingFromFrontend || {})) {
+      if (allowed.includes(key)) data[key] = updatedDataComingFromFrontend[key];
+    }
+  if (Object.keys(data).length === 0) return null;
+  const updatedData = {};
+  // Compare field-by-field
+  for (const key in data) {
+    let newValue = data[key];
+    let oldValue = existingAdmin[key];
+    if (key === "admin_phoneno") {
+      oldValue = decryptData(existingAdmin.admin_phoneno);
+    }
+    if (typeof newValue === "string" && typeof oldValue === "string") {
+      newValue = newValue.trim();
+      oldValue = oldValue.trim();
+    }
+    if (["admin_name", "admin_email", "admin_location"].includes(key)) {
+      if (newValue.toLowerCase() !== oldValue.toLowerCase()) {
+        updatedData[key] = newValue;
+      }
+    } else if (key !== "admin_password" && newValue !== oldValue) {
+      updatedData[key] = newValue;
+    }
+  }
+  //Handle password update safely
+  if (data.admin_password) {
+    const isPasswordSame = await verifyPassword(data.admin_password, existingAdmin.admin_password);
+    if (!isPasswordSame) {
+      updatedData.admin_password = await hashPassword(data.admin_password);
+    }
+  }
+  // Handle phone number encryption
+  const isPhoneNoSame = data.admin_phoneno === decryptData(existingAdmin.admin_phoneno);
+  if (!isPhoneNoSame && updatedData.admin_phoneno) {
+    updatedData.admin_phoneno = encryptData(updatedData.admin_phoneno);
+  } else {
+    delete updatedData.admin_phoneno;
+  }
+  // No changes found
+  if (Object.keys(updatedData).length === 0) {
+    throw new AppError(
+      `No changes detected. Admin ${updates.admin_name} data remains the same.`,
+      409,
+      null,
+      { unchanged: true, admin: existingAdmin }
+    );
+  }
+  console.log("We check that we get the final object and we update accordingly ", updatedData);
+  
+  // Final update
+  try {
+    const updatedAdmin = await prisma.admin.update({
+      where: { admin_id: adminId },
+      data: updatedData,
+    });
+    return updatedAdmin;
+  } catch (err) {
+    console.log(err);
+    
+    if (err?.code === "P2025") return null;
+    if (err instanceof AppError) next(err);
+  }}catch(updateAdminSettingsServiceError){
+    console.log("We get error from update Admin Settings Service ", updateAdminSettingsServiceError);
   }
 }

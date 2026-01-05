@@ -18,6 +18,25 @@ export const protectedRoutes = async (req, res, next) => {
     const decryptedAccessToken = decryptData(req?.cookies?.user_accessToken);
     const decryptedRefreshToken = decryptData(req?.cookies?.user_refreshToken);
 
+    //admin tokens
+
+    const decryptAdminAccessToken = decryptData(req?.cookies?.admin_accessToken)
+    const decryptAdminRefreshToken = decryptData(req?.cookies?.admin_refreshToken)
+
+    //if admin login from the profile means admin login as a user and login as a admin from the profile
+     const isAdminRoute = req.originalUrl.startsWith("/AdminDashboard");
+
+    // If this is an ADMIN route → skip user token validation
+    if (isAdminRoute) {
+      return next();
+    }
+
+    // If this is NOT admin route → ignore admin tokens entirely
+    // (do not block user)
+    if (!isAdminRoute && (decryptAdminAccessToken || decryptAdminRefreshToken)) {
+      // Continue → validate user tokens normally
+    }
+
     //Verify whether the access token is valid or not (come from cookie)
     const isAccessTokenValid = decryptedAccessToken
       ? verifyToken(decryptedAccessToken, process.env.ACCESS_TOKEN_SECRET)

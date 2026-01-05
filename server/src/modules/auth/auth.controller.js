@@ -4,6 +4,7 @@ import {
   getUserByEmail,
   createRefreshToken,
   updateUserUpdatedAtField,
+  updatePassword
 } from "./auth.service.js";
 import { validateRegister, validateLogin } from "./auth.validator.js";
 import { hashPassword, verifyPassword } from "../../utils/hashing.js";
@@ -25,6 +26,7 @@ import {
   getAdminByEmail,
   updateAdminUpdatedAtField,
   createAdminRefreshToken,
+  createAdmin
 } from "../admin/admin.service.js";
 
 import dotenv from "dotenv";
@@ -90,6 +92,7 @@ export const register = async (req, res) => {
     res.status(201).json({
       message: "your are registered successfully",
       response: { username: user.user_name },
+      adminRegisteration: false
     });
     //if there is any error in the creation of the user data fro registration
   } catch (err) {
@@ -105,24 +108,18 @@ export const login = async (req, res) => {
   const { user_email, user_password } = req.body;
   let checkPassword;
   let decncryptedData;
-
+  
   const errorStatusAndMessage = {
     success: false,
     message:
-      "Invalid credentials, dear user your passsword or email are wrong!",
+    "Invalid credentials, dear user your passsword or email are wrong!",
   };
-
-  try {
-    decncryptedData = {
-      user_email: decryptData(user_email),
-      user_password: decryptData(user_password),
-    };
-  } catch (decryptionError) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid encrypted data",
-    });
-  }
+  
+  decncryptedData = {
+    user_email: decryptData(user_email),
+    user_password: decryptData(user_password),
+  };
+  
   try {
     const { error } = validateLogin(decncryptedData);
     if (error)
@@ -139,7 +136,7 @@ export const login = async (req, res) => {
     const userFortoUpDateUserUpdatedAtField = await getUserByEmail(
       decncryptedData.user_email
     );
-    
+
     if (!userFortoUpDateUserUpdatedAtField) {
       return res.status(401).json({
         success: false,
@@ -186,6 +183,7 @@ export const login = async (req, res) => {
 
     return res.status(200).json({
       message: "Login successful",
+      userLogin: true,
       user: {
         user_id: user.user_id,
         user_name: user.user_name,
@@ -243,9 +241,6 @@ export const renewAccessToken = (req, res) => {
 
 //adminLogin controller
 export const adminLogin = async (req, res, next) => {
-  // const { user_email, user_password } = req.body;
-  console.log("we are at admin login ", req.body);
-
   const { user_email, user_password } = req.body;
   let decryptedData;
 
@@ -261,7 +256,6 @@ export const adminLogin = async (req, res, next) => {
       user_password: decryptData(user_password),
     };
   } catch (decryptionError) {
-    console.log("Admin decryption failed: ", decryptionError);
     return res.status(400).json({
       success: false,
       message: "Invalid encrypted data",
@@ -278,7 +272,6 @@ export const adminLogin = async (req, res, next) => {
         message: error.details[0].message,
       });
   } catch (validationError) {
-    console.log("We get error of the admin login ", validationError);
     return res.status(400).json({
       success: false,
       isUserRegister: false,
@@ -295,7 +288,7 @@ export const adminLogin = async (req, res, next) => {
         success: false,
         isUserRegister: false,
         message:
-          "Dear admin, you haven’t registered yet. Please register first to continue.",
+          "You are not register with us!. Thank you",
       });
     }
 
@@ -309,7 +302,6 @@ export const adminLogin = async (req, res, next) => {
 
     //Update last login field
     const updatedAdmin = await updateAdminUpdatedAtField(admin.admin_id);
-    console.log("We get the updated admin data ", updatedAdmin);
     //JWT token payload
     const jwtPayload = {
       admin_id: updatedAdmin.admin_id,
@@ -327,7 +319,6 @@ export const adminLogin = async (req, res, next) => {
 
     //Store refresh token in DB
    const response =  await createAdminRefreshToken(updatedAdmin.admin_id, encryptRefreshToken);
-    console.log("We get the response after storing refresh token ", response);
 
     //Send tokens in cookies
     setAccessToken(res, "admin_accessToken",encryptAccessToken);
@@ -357,8 +348,6 @@ export const adminLogin = async (req, res, next) => {
 
 //AdminRegister controller
 export const adminRegister = async (req, res, next) => {
-  console.log("we are at the admin register endpoint ", req.body);
-
   const { username, email, password, phoneNumber, location } = req.body;
   // role → should be either 'user' or 'admin' (frontend should send this)
 
@@ -413,7 +402,7 @@ export const adminRegister = async (req, res, next) => {
     let response;
     if (decryptedData.role === "admin") {
       //Save into Admin table
-      response = await adminService.createAdmin({
+      response = await createAdmin({
         admin_name: commonData.name,
         admin_email: commonData.email,
         admin_phoneno: commonData.phone_no,
@@ -435,6 +424,7 @@ export const adminRegister = async (req, res, next) => {
       success: true,
       message: `${decryptedData.role} registered successfully`,
       response: { username: commonData.name },
+      adminRegisteration: true
     });
   } catch (err) {
     console.log("We are the last try catch block ", err);
@@ -445,3 +435,41 @@ export const adminRegister = async (req, res, next) => {
     });
   }
 };
+
+
+export const checkTokenAndShowTheLogout = (req, res) => {
+  try {
+    const accessToken = req.cookies.user_accessToken;
+    const refreshToken =  req.cookies.user_refreshToken;
+
+    if (!accessToken || !refreshToken) {
+      return res.status(200).json({
+        message: "We reach to the login check endpoint ", 
+        loggedIn: false 
+      });
+    }else{
+    return res.status(200).json({ loggedIn: true });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      loggedIn: false,
+      message: "Server error while checking login status"
+    });
+  }
+};
+
+//controller for the password forget
+export const forgetPassword = async (req, res) => {
+  try{
+    const newPasswordHash = await hashPassword(req.body.password);
+   
+   await updatePassword(req.body.email, newPasswordHash);
+    
+      res.status(200).json({
+        success: true,
+        message: "Passwrod has updated successfully!"
+      })
+  }catch(forgetPasswordError){
+    console.log("we get error during the forgetPasswordError ", forgetPasswordError);
+  }
+}

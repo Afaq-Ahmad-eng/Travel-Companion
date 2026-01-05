@@ -190,3 +190,14 @@ export const saveNewRefreshTokenOfAdmin = async (adminId, encryptRefreshToken) =
     throw new AppError(error, 690)
   }
 };
+
+export const updatePassword = async (email, newPassword) => {
+  try {
+     await prisma.user.update({
+      where: { user_email: email },
+      data: { user_password: newPassword }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

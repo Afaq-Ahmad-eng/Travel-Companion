@@ -1,4 +1,3 @@
-import { data } from "react-router-dom";
 import prisma from "../../config/database.js";
 
 const objectForCustomError = {
@@ -102,10 +101,6 @@ export const getUserByIdForProfile = async (user_id) => {
       (trip) => !trip.isCanceled && new Date(trip.end_date) < today
     ).length;
 
-    console.log("We Upcoming trips ", upcomingTrips);
-    console.log("We Completed trips ", completedTrips);
-    console.log("We Canceled trips ", canceledTrips);
-
     // Total experiences count (non-null only)
     const totalExperiences = user.trips.filter(
       (trip) => trip.share_experiences !== null
@@ -144,8 +139,6 @@ export const getUserByIdForProfile = async (user_id) => {
 };
 
 export const budgetDataForProfile = async (user_id) => {
-  console.log("we are at budget Data For Profile ", user_id);
-
   try {
     const dataForBudgetManager = await prisma.trips.findMany({
       where: { user_id },
@@ -169,11 +162,7 @@ export const budgetDataForProfile = async (user_id) => {
 
 //Trips plans fecting from Db and sending to the backend and from backend send to the frontend in the prepare form
 export const DataForTripPlans = async (user_id) => {
-  console.log(
-    "we are in the trips plan Data for Trip plan and we get the user id ",
-    user_id
-  );
-  try {
+ try {
     const tripPlansData = await prisma.trips.findMany({
       where: { user_id },
     });

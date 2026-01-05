@@ -14,12 +14,10 @@ export const profile = async (req, res) => {
   const hostname = req.hostname; // e.g. "example.com" (no port)
   const protocol = req.protocol; // "http" or "https" (trust proxy matters)
   const fullUrl = `${protocol}://${hostname}:${hostHeader}${req.originalUrl}`;
-  console.log("We get request from the this url ", fullUrl);
 
   try {
     //  Fetch data from DB
     const response = await getUserByIdForProfile(req.user.user_id);
-    console.log("User Profile Data From DB:", response);
 
     if (!response || !response.user_details) {
       return res.status(404).json({
@@ -73,7 +71,6 @@ export const profile = async (req, res) => {
       allCategoriesAndItsExpenses,
     };
 
-    console.log("Budget Manager Expenses Data:", response?.budgets);
     // Construct final user data object
     const userData = {
       user_id: response.user_details.user_id,
@@ -104,7 +101,6 @@ export const profile = async (req, res) => {
       categories: budgetManagerExpensesData,
     };
 
-    console.log("Final User Profile Object:", userData);
 
     //  Send Success Response
     return res.status(200).json({
@@ -136,20 +132,10 @@ export const dataForBudgetManager = async (req, res, next) => {
 
 //Trips Plan Controller
 export const tripsPlanData = async (req, res, next) => {
-  console.log(
-    "We get the user_id and we are in the tripsPlanData ",
-    req.params.user_id
-  );
-  console.log(
-    "Types of user_id and we are in the tripsPlanData ",
-    typeof req.params.user_id
-  );
-  try {
+   try {
     const fetchedDataOfTrips = await DataForTripPlans(
       Number(req.params.user_id)
     );
-    console.log("We get data from DB ", fetchedDataOfTrips);
-
     const prepareDataForTripsPlan = fetchedDataOfTrips.map((trip) => {
   const start = new Date(trip.start_date);
   const end = new Date(trip.end_date);
@@ -210,12 +196,13 @@ export const logOut = async (req, res, next) => {
   try {
     await userProfileLogOut(req.user.user_id);
 
-    res.clearCookie("accessToken", { path: "/" });
-    res.clearCookie("refreshToken", { path: "/" });
+    res.clearCookie("user_accessToken", { path: "/" });
+    res.clearCookie("user_refreshToken", { path: "/" });
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Logged out successfully",
+      LoggedIn: false
     });
   } catch (logoutError) {
     console.log("Error in the logout ", logoutError);

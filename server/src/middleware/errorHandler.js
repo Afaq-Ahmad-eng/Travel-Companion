@@ -1,7 +1,6 @@
 import { AppError } from "../utils/AppError.js";
 
 export function errorHandler(err, req, res, next) {
-  console.log("we are in the errorHandler function ");
   
   console.error("Global Error:", err.message);
   console.error("Status Code :", err.statusCode);

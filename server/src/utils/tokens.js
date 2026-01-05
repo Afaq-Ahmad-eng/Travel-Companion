@@ -11,10 +11,7 @@ dotenv.config();
 // This function we use for generating access token(short - time ) and refresh token (long -time)
 
 export const generateAccessToken = (user) => {  
-  console.log("we are in the generate access token ", user);
-  
-  if(user.admin_role && user.admin_role === 'admin'){
-    console.log("We are in the if condition of admin access token ");
+   if(user.admin_role && user.admin_role === 'admin'){
     return jwt.sign(
     { admin_id: user.admin_id, admin_email: user.admin_email , role: user.admin_role},
     process.env.ACCESS_TOKEN_SECRET,
@@ -29,11 +26,7 @@ export const generateAccessToken = (user) => {
   }
 }
 export const generateRefreshToken = (user) => {  
-  console.log("We are in the generate refrsh token ", user);
-  
    if(user.admin_role && user.admin_role === 'admin'){
-    console.log("We are in the if condition of admin of refresh token ");
-    
     return jwt.sign(
     { admin_id: user.admin_id, role: user.admin_role},
     process.env.REFRESH_TOKEN_SECRET,
@@ -56,6 +49,8 @@ export const verifyToken = (token, key) => {
     const decoded = jwt.verify(token, key); 
     return { valid: true, expired: false, decoded };
   } catch (err) {    
+    console.log("we check the error ", err);
+    
     return {
       valid: false,
       expired: err.name === "TokenExpiredError",

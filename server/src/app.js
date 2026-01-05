@@ -1,5 +1,3 @@
-// src/app.js
-
 //External modules
 import express from "express";
 import cors from "cors";
@@ -25,6 +23,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 //Verify the admin
 import { verifyAdmin } from "./middleware/verifyAdmin.js";
 import { adminProtectedRoutes } from "./middleware/adminProtectedRoutes.js";
+import { checkTripCompletion } from "./middleware/checkTripCompletion.js";
 
 const app = express();
 
@@ -51,7 +50,7 @@ app.use(cookieParser());
 app.use("/auth", authRoutes);
 
 // Protect entire share module, then mount routes inside
-app.use("/share", protectedRoutes, /*"checkTripCompletion",*/ shareExperienceRoutes);
+app.use("/share", protectedRoutes, /*checkTripCompletion*/ shareExperienceRoutes);
 app.use('/user',protectedRoutes,profile);
 app.use("/budget",protectedRoutes,budgets);
 app.use("/trip",protectedRoutes,TripPlan);
@@ -61,7 +60,7 @@ app.use("/user", protectedRoutes, userData)
 app.use("/testing",testingPurpose)
 
 // Admin Routes
-app.use("/admin",adminProtectedRoutes, /* requireAdmin, */ adminRoutes);
+app.use("/admin",adminProtectedRoutes,  verifyAdmin, adminRoutes);
 app.get("/", (req, res) => res.send("API running"));
 
 //error handler 

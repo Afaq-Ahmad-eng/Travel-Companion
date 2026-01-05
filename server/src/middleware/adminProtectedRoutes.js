@@ -1,16 +1,15 @@
 //Internal modules
-import { FaTrashRestore } from "react-icons/fa";
 import { getAdminRefreshTokenById } from "../modules/admin/admin.service.js";
 import {
   getAdminDataForAdminToken,
-  saveNewRefreshTokenOfAdmin,
+  // saveNewRefreshTokenOfAdmin,
 } from "../modules/auth/auth.service.js";
 import { AppError } from "../utils/AppError.js";
-import { setAccessToken, setRefreshToken } from "../utils/cookies.js";
+import { setAccessToken } from "../utils/cookies.js";
 import { decryptData, encryptData } from "../utils/secure.js";
 import {
   generateAccessToken,
-  generateRefreshToken,
+  // generateRefreshToken,
   verifyToken,
 } from "../utils/tokens.js";
 import dotenv from "dotenv";
@@ -26,6 +25,15 @@ export const adminProtectedRoutes = async (req, res, next) => {
     const decryptedAccessToken = decryptData(req?.cookies?.admin_accessToken);
     const decryptedRefreshToken = decryptData(req?.cookies?.admin_refreshToken);
 
+    //if admin login want to login as a user
+    const decryptedUserAccessToken = decryptData(
+      req?.cookies?.user_accessToken
+    );
+    const decryptedUserRefreshToken = decryptData(
+      req?.cookies?.user_refreshToken
+    );
+
+    if (decryptedUserAccessToken || decryptedUserRefreshToken) return next();
     //Verify tokens
 
     const isAccessTokenValid = decryptedAccessToken
@@ -73,91 +81,45 @@ export const adminProtectedRoutes = async (req, res, next) => {
             )
           : objectForNotValidToken;
 
-        // Compare both refresh tokens (cookie & DB)
-        // if (
-        //   isRefreshTokenValid.valid === isDbRefreshTokenValid.valid &&
-        //   decryptedRefreshToken === decryptedStoredRefreshToken
-        // ) {
-        //   //Renew access token
-        //   const newAccessToken = generateAccessToken(jwtPayload);
-
-        //   const newAccessTokenEncrypted = encryptData(newAccessToken);
-
-        //   const newRefreshToken = generateRefreshToken(jwtPayload);
-         
-        //   const newRefreshTokenEncrypted = encryptData(newRefreshToken);
-
-        //   // Encrypt and set in cookies
-        //   setAccessToken(res, "admin_accessToken", newAccessTokenEncrypted);
-        //   setRefreshToken(res, "admin_refreshToken", newRefreshTokenEncrypted);
-
-         
-        //   console.log("we get the admin id from jwt payload ",jwtPayload.admin_id);
-          
-        //   try{
-        //     const DBResult = await saveNewRefreshTokenOfAdmin(
-        //       jwtPayload.admin_id,
-        //       newRefreshTokenEncrypted
-        //     );
-        //   }catch(error){
-        //     throw error;
-        //   }
-          
-        //   // Store admin in request
-        //   req.admin = isRefreshTokenValid.decoded;
-
-        //   return next();
-        // }
-
         try {
-  if (
-    isRefreshTokenValid.valid === isDbRefreshTokenValid.valid &&
-    decryptedRefreshToken === decryptedStoredRefreshToken
-  ) {
-    console.log("Condition passed, renewing tokens...");
+          if (
+            isRefreshTokenValid.valid === isDbRefreshTokenValid.valid &&
+            decryptedRefreshToken === decryptedStoredRefreshToken
+          ) {
+            console.log("Condition passed, renewing tokens...");
 
-    const newAccessToken = generateAccessToken(jwtPayload);
-    const newAccessTokenEncrypted = encryptData(newAccessToken);
-    // const newRefreshToken = generateRefreshToken(jwtPayload);
-    // const newRefreshTokenEncrypted = encryptData(newRefreshToken);
+            const newAccessToken = generateAccessToken(jwtPayload);
+            const newAccessTokenEncrypted = encryptData(newAccessToken);
+            // const newRefreshToken = generateRefreshToken(jwtPayload);
+            // const newRefreshTokenEncrypted = encryptData(newRefreshToken);
 
-    setAccessToken(res, "admin_accessToken", newAccessTokenEncrypted);
-    // setRefreshToken(res, "admin_refreshToken", newRefreshTokenEncrypted);
+            setAccessToken(res, "admin_accessToken", newAccessTokenEncrypted);
+            // setRefreshToken(res, "admin_refreshToken", newRefreshTokenEncrypted);
 
-    // console.log("Admin ID from JWT payload:", jwtPayload.admin_id);
+            // console.log("Admin ID from JWT payload:", jwtPayload.admin_id);
 
-    // const DBResult = await saveNewRefreshTokenOfAdmin(
-    //   jwtPayload.admin_id,
-    //   newRefreshTokenEncrypted
-    // );
+            // const DBResult = await saveNewRefreshTokenOfAdmin(
+            //   jwtPayload.admin_id,
+            //   newRefreshTokenEncrypted
+            // );
 
-    req.admin = isRefreshTokenValid.decoded;
-    return next();
-  } 
-  // else {
-  //   console.log("Refresh token validation failed.");
-  //   return res.status(401).json({ message: "Invalid refresh token" });
-  // }
-} catch (error) {
-  console.error("Error in refresh token flow:", error);
-  return res.status(500).json({ message: "Internal server error" });
-}
-
-        //  else {
-        //   throw new AppError(
-        //     "Admin session expired or invalid. Please log in again.",
-        //     401,
-        //     null,
-        //     {
-        //       TokensValid: false,
-        //       TokensExpire: true,
-        //       showLoginAndRegistrationForm: true,
-        //     }
-        //   );
-        // }
+            req.admin = isRefreshTokenValid.decoded;
+            return next();
+          }
+          // else {
+          //   console.log("Refresh token validation failed.");
+          //   return res.status(401).json({ message: "Invalid refresh token" });
+          // }
+        } catch (error) {
+          console.error("Error in refresh token flow:", error);
+          return res.status(500).json({ message: "Internal server error" });
+        }
       } catch (errorInGeneratingAccessToken) {
-        console.log("We get error during token rotation ", errorInGeneratingAccessToken);
-        
+        console.log(
+          "We get error during token rotation ",
+          errorInGeneratingAccessToken
+        );
+
         throw new AppError(
           "Failed to renew admin session. Please login again.",
           401,
