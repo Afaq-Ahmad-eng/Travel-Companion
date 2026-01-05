@@ -45,5 +45,5 @@
 Afaq Ahmad Email: afaqahmad2593@gmail.com  
 Afaq Ahmad LinkedIn: www.linkedin.com/in/afaq-ahmad-6065b3339
 
-Mamoor Ahmad Email: Khanmamur649@gmail.com
-Mamoor Ahmad LinkedIn: 
+Mamur Ahmad Email: Khanmamur649@gmail.com
+Mamur Ahmad LinkedIn: https://www.linkedin.com/in/mamur-khan-87a42427a
