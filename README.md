@@ -24,8 +24,11 @@
 5. Admin can manage destinations and monitor user activity.
 
 ## Screenshots
-![Homepage](screenshots/homepage.png)
-![Destination Details](screenshots/destination.png)
+![Homepage](Assests/Homepage.png)
+![Destination Details frist](Assets/destination.png)
+![Destination Details second](screenshots/destination.png)
+![Destination Details third](screenshots/destination.png)
+![Destination Details last](screenshots/destination.png)
 ![Trip Planner](screenshots/trip_planner.png)
 
 ## Future Improvements
@@ -40,4 +43,7 @@
 
 ## Contact
 Afaq Ahmad Email: afaqahmad2593@gmail.com  
-Afaq Ahmad LinkedIn: 
+Afaq Ahmad LinkedIn: www.linkedin.com/in/afaq-ahmad-6065b3339
+
+Mamoor Ahmad Email: Khanmamur649@gmail.com
+Mamoor Ahmad LinkedIn: 
