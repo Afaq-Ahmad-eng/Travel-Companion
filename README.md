@@ -24,12 +24,12 @@
 5. Admin can manage destinations and monitor user activity.
 
 ## Screenshots
-![Homepage](Assests/Homepage.png)
-![Destination Details frist](Assets/DestinationFirst.png)
-![Destination Details second](Assets/DestinationSecond.png)
-![Destination Details third](Assets/DestinationThird.png)
-![Destination Details last](Assets/DestinationLast.png)
-![Trip Plan Form](Assets/TripPlanForm.png)
+![Homepage](src/Assests/Homepage.png)
+![Destination Details frist](src/Assets/DestinationFirst.png)
+![Destination Details second](src/Assets/DestinationSecond.png)
+![Destination Details third](src/Assets/DestinationThird.png)
+![Destination Details last](src/Assets/DestinationLast.png)
+![Trip Plan Form](src/Assets/TripPlanForm.png)
 
 ## Future Improvements
 - Integration of AI-based travel suggestions using machine learning.
