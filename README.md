@@ -24,7 +24,7 @@
 5. Admin can manage destinations and monitor user activity.
 
 ## Screenshots
-![Homepage](src/Assests/Homepage.png)
+![Homepage](src/Assets/Homepage.png)
 ![Destination Details frist](src/Assets/DestinationFirst.png)
 ![Destination Details second](src/Assets/DestinationSecond.png)
 ![Destination Details third](src/Assets/DestinationThird.png)
