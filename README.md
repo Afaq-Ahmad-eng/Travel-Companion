@@ -40,4 +40,7 @@
 
 ## Contact
 Afaq Ahmad Email: afaqahmad2593@gmail.com  
-Afaq Ahmad LinkedIn: 
+Afaq Ahmad LinkedIn: www.linkedin.com/in/afaq-ahmad-6065b3339
+
+Mamoor Ahmad Email: Khanmamur649@gmail.com
+Mamoor Ahmad LinkedIn: 
