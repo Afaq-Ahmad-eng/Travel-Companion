@@ -25,11 +25,11 @@
 
 ## Screenshots
 ![Homepage](Assests/Homepage.png)
-![Destination Details frist](Assets/destination.png)
-![Destination Details second](screenshots/destination.png)
-![Destination Details third](screenshots/destination.png)
-![Destination Details last](screenshots/destination.png)
-![Trip Planner](screenshots/trip_planner.png)
+![Destination Details frist](Assets/DestinationFirst.png)
+![Destination Details second](Assets/DestinationSecond.png)
+![Destination Details third](Assets/DestinationThird.png)
+![Destination Details last](Assets/DestinationLast.png)
+![Trip Plan Form](Assets/TripPlanForm.png)
 
 ## Future Improvements
 - Integration of AI-based travel suggestions using machine learning.
