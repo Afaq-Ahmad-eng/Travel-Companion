@@ -1,27 +1,8 @@
-// import styles from "./AdminDashboardSidebar.module.css";
-
-// const AdminDashboardSidebar = (props) => {
-//   return (
-//     <div className={styles.sidebar}>
-//       <h2 className={styles.logo}>Admin</h2>
-//       <ul>
-//         <li className={styles.active}>Dashboard</li>
-//         <li>Reports</li>
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default AdminDashboardSidebar;
-
-
 import axios from "axios";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Cookies from "js-cookie";
 import { useState } from "react";
 
-const cookieStore = Cookies;
 
 export default function AdminSidebar() {
   const navigate = useNavigate();
@@ -45,17 +26,15 @@ export default function AdminSidebar() {
 
   const logout = async () => {
     try {
-      cookieStore.remove("accessToken");
-      cookieStore.remove("refreshToken");
-      // const adminResponseFromDB = await axios.post("http://localhost:3001/admin/auth/logout");
-      // if (adminResponseFromDB.status === 200) {
+     const adminResponseFromDB = await axios.post("http://localhost:3001/admin/auth/logout");
+      if (adminResponseFromDB.status === 200) {
         Swal.fire({
           title: "Logged Out",
           text: "You have been logged out successfully!",
         }).then(() => {
           navigate("/");
         });
-      // }
+      }
     } catch (err) {
       console.error("Logout failed", err);
       Swal.fire({

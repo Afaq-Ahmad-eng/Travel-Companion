@@ -67,7 +67,7 @@ const ResolvedReports = () => {
 
       <div className="table-responsive">
         <table className="table table-hover table-bordered align-middle text-center shadow-sm">
-          <thead className="table-success">
+          <thead className="table-primary">
             <tr>
               <th>ID</th>
               <th>User</th>
@@ -113,7 +113,7 @@ const ResolvedReports = () => {
         </table>
       </div>
 
-      {/* 👇 Fullscreen Image Modal */}
+      {/* Fullscreen Image Modal */}
       {selectedImage && (
         <div
           className={styles.imageModal}

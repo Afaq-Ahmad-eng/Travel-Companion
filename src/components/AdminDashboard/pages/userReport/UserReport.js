@@ -86,7 +86,7 @@ const UserReport = () => {
       {/* TABLE */}
       <div className="table-responsive">
         <table className="table table-hover table-bordered align-middle text-center shadow-sm">
-          <thead className="table-warning">
+          <thead className="table-primary">
             <tr>
               <th>ID</th>
               <th>User</th>

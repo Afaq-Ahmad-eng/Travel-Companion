@@ -292,9 +292,8 @@
   display: flex;
   justify-content: center;   /* Centers buttons horizontally */
   align-items: center;       /* Aligns buttons vertically */
-  flex-wrap: nowrap;         /* Prevents wrapping (keeps buttons side by side) */
-  gap: 20px;                 /* Space between buttons */
-  margin-top: 40px;
+  flex-wrap: nowrap;         /* Prevents wrapping (keeps buttons side by side) */                /* Space between buttons */
+  /* margin-top: 40px; */
   padding: 20px;
 }
 

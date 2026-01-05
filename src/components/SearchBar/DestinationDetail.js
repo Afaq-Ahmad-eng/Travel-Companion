@@ -360,9 +360,9 @@ export default function DestinationDetail() {
 
 
       <div className="back-button-container">
-        <button className="back-button" onClick={() => navigate(-1)}>
+        {/* <button className="back-button" onClick={() => navigate(-1)}>
           Back
-        </button>
+        </button> */}
       </div>
       <div className="back-button-container">
         <button className="plan-button" onClick={() => setShowTripPlan(true)}>

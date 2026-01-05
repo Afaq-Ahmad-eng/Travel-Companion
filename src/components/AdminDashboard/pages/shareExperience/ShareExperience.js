@@ -15,11 +15,8 @@ export default function ShareExperience() {
         const res = await fetchDataFromServer(
           "http://localhost:3001/admin/user-experiences"
         );
-        console.log("we check the response for the experience ", res);
-
         setExperiences(res.data || []);
       } catch (error) {
-        console.error("Error fetching experiences:", error);
         Swal.fire({
           icon: "error",
           title: "Failed to load experiences",
@@ -43,8 +40,6 @@ export default function ShareExperience() {
         title: `${action} successful`,
         text: res.message,
       });
-
-      // Update list locally
       setExperiences((prev) => prev.filter((exp) => exp.id !== id));
     } catch (error) {
       Swal.fire({
@@ -55,15 +50,18 @@ export default function ShareExperience() {
     }
   };
 
-  if (loading) return <p>Loading user experiences...</p>;
-
-  if (experiences.length === 0) return <p>No user experiences to display.</p>;
+  if (loading) return <p className="text-center mt-4">Loading user experiences...</p>;
+  if (experiences.length === 0) return <p className="text-center mt-4">No user experiences to display.</p>;
 
   return (
-    <div className="user-experiences">
-      <h2 className="mb-4">Users' Shared Experiences</h2>
-      <table className="table table-striped table-hover table-bordered">
-        <thead className="table-dark">
+    <div
+      className="user-experiences p-4 shadow-sm rounded bg-white"
+      style={{ border: "1px solid #e5e5e5" }}
+    >
+      <h2 className="mb-4 text-center fw-bold">Users' Shared Experiences</h2>
+
+      <table className="table table-striped table-hover table-bordered align-middle">
+        <thead className="table-primary">
           <tr>
             <th>S.No</th>
             <th>User</th>
@@ -73,14 +71,17 @@ export default function ShareExperience() {
             <th>Completed Date</th>
           </tr>
         </thead>
+
         <tbody>
           {experiences.map((exp, index) => (
             <tr key={exp.id}>
-              <td>{index + 1}</td>
+              <td className="fw-semibold">{index + 1}</td>
               <td>{exp?.trips?.user?.user_name}</td>
               <td>{exp?.trips?.destination}</td>
-              <td>{exp.description}</td>
-              <td>{exp.rating}</td>
+              <td style={{ maxWidth: "300px" }}>{exp.description}</td>
+              <td>
+                <span className="badge bg-success p-2 fs-6">{exp.rating}</span>
+              </td>
               <td>
                 {new Date(exp.trips.end_date).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -88,20 +89,6 @@ export default function ShareExperience() {
                   day: "numeric",
                 })}
               </td>
-              {/* <td>
-          <button
-            className="btn btn-success btn-sm me-2"
-            onClick={() => handleAction(exp.id, "approve")}
-          >
-            Approve
-          </button>
-          <button
-            className="btn btn-danger btn-sm"
-            onClick={() => handleAction(exp.id, "reject")}
-          >
-            Reject
-          </button>
-        </td> */}
             </tr>
           ))}
         </tbody>

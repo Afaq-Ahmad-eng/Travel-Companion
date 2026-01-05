@@ -148,16 +148,73 @@ useEffect(() => {
     };
   }, []);
 
+  //function for validation of the budget manager data
+  const validateBudgetData = () => {
+  if (!totalBudget || Number(totalBudget) <= 0) {
+    return "Total budget must be greater than 0.";
+  }
+
+  if (categories.length === 0) {
+    return "Please add at least one category.";
+  }
+  
+  for (const category of categories) {
+    if(category.expenses === undefined || category.expenses === null || !Array.isArray(category.expenses) || category.expenses.length === 0){
+      return `Please add at least one expense in category "${category.name}".`;
+    }
+    if (!category.name || category.name.trim() === "") {
+      return "Every category must have a name.";
+    }
+
+    if (!category.budget || Number(category.budget) <= 0) {
+      return `Category "${category.name || "Unnamed"}" must have a valid budget.`;
+    }
+
+    // ⭐ EXPENSE VALIDATION FIXED HERE ⭐
+    if (!Array.isArray(category.expenses)) {
+      return `Category "${category.name}" has invalid expenses data.`;
+    }
+
+    console.log("We check the category expenses ", category);
+    
+    for (const expense of category.expenses) {
+       console.log("We check that we get the expenses or not ");
+       
+      if(!expense){
+        return `Category "${category.name}" has an invalid expense entry.`;
+      }
+      const desc = expense?.description?.trim();
+      const amount = Number(expense?.amount);
+      const date = expense?.date;
+
+      // Description required
+      if (!desc) {
+        return `Please enter a description for an expense in category "${category.name}".`;
+      }
+
+      // Amount must be positive number
+      if (!amount || amount <= 0) {
+        return `Invalid expense amount in category "${category.name}".`;
+      }
+
+      // Date required
+      if (!date) {
+        return `Please select a date for an expense in category "${category.name}".`;
+      }
+    }
+  }
+
+  return null; // no errors
+};
+
   //we declare the array to send data of the budget manager to the server in the correct formet
   let budgetData = [];
 
   // Save Data
   const saveToLocalStorage = () => {
     localStorage.setItem("totalBudget", totalBudget);
-    console.log("total Budget ", totalBudget);
 
     // Set the budget data to send to the server
-
     budgetData = categories.map((category) => {
       const categoryData = {
         categoryName: category.name,
@@ -174,22 +231,28 @@ useEffect(() => {
       ...budgetData,
       TotalBudget: totalBudget,
     };
-    console.log("we set data to send the server ", budgetData);
-
     localStorage.setItem("categories", JSON.stringify(categories));
   };
 
   const handleContinue = async () => {
     try {
+
+      const validationError = validateBudgetData();
+    if (validationError) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: validationError
+      });
+      return; // STOP here
+    }
+
       saveToLocalStorage();
       const budgetManagerResponse = await sendDataToServer(
         budgetManagerApi,
         budgetData
       );
-      console.log(
-        "we get the response of the budget manager ",
-        budgetManagerResponse
-      );
+  
 
       //Success SweetAlert
       Swal.fire({
@@ -238,7 +301,7 @@ useEffect(() => {
         localStorage.removeItem("categories");
         localStorage.removeItem("budgetSaved");
 
-        // 🔁 Reset states
+        // Reset states
         setTotalBudget(0);
         setCategories(
           defaultCategories.map((cat) => ({
@@ -253,7 +316,7 @@ useEffect(() => {
         setCategoryBudgetWarning(null);
         setExpenseWarning(null);
 
-        // 🧽 Reset input fields
+        // Reset input fields
         document
           .querySelectorAll(
             'input[type="number"], input[type="text"], input[type="date"]'

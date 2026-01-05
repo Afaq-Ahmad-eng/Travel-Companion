@@ -1,230 +1,185 @@
-import { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { adminSettingsValidation } from "./adminSettingsValidation";
+import AuthForm from "../../AuthForm/AuthForm";
+import { useState, useEffect } from "react";
+import { fetchDataFromServer, putDataToServer } from "../../../utils/api";
 
 export default function AdminSettings() {
-  const [formData, setFormData] = useState({
-    adminName: "Admin",
-    email: "admin@travelbuddy.com",
-    currentPassword: "",
-    newPassword: "",
-    darkMode: false,
-    maintenanceMode: false,
-    twoFactorAuth: false,
-    emailNotifications: true,
-    language: "en",
-    timezone: "UTC+05:00",
+  const [adminData, setAdminData] = useState(null);
+  const [showAuthForm, setShowAuthForm] = useState({
+    show: false,
+    mode: "register",
   });
+  const navigate = useNavigate();
 
-   const navigate = useNavigate();
+  
 
-  // Apply dark or light mode to the body background
   useEffect(() => {
-    document.body.style.backgroundColor = formData.darkMode ? "#1e1e1e" : "#ffffff";
-    document.body.style.color = formData.darkMode ? "#f5f5f5" : "#212529";
-  }, [formData.darkMode]);
+    const adminDataForUpdation = async () => {
+      const response = await fetchDataFromServer(
+        "http://localhost:3001/admin/admin-data-for-update"
+      );
+      setAdminData(response.adminData);
+    };
+    adminDataForUpdation();
+  }, []);
 
-  const handleChange = (e) => {
-    const { name, type, checked, value } = e.target;
-    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+  // NEW: extract submit logic into its own function so Formik onSubmit calls it
+  const handleSaveAdminSettings = async (values) => {
+    try {
+      const id = adminData?.id; // Hardcoded admin ID for now
+      // You can replace the console.log with an API call (axios/fetch) to save the settings:
+      const result = await putDataToServer(`http://localhost:3001/admin/update/${id}`, values);
+      console.log("Updated Admin Settings (to be saved):", result);
+
+      // show confirmation and then navigate back to AdminDashboard
+      Swal.fire({
+        icon: "success",
+        title: "Admin Settings Updated",
+        confirmButtonColor: "#0d6efd",
+      }).then(() => {
+        navigate("/AdminDashboard");
+      });
+    } catch (err) {
+      console.error("Failed to save admin settings:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Save Failed",
+        text: err?.message || "Unable to save admin settings. Try again.",
+        confirmButtonColor: "#d33",
+      });
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      icon: "success",
-      title: "Settings Saved",
-      text: "✅ All changes have been successfully saved!",
-      confirmButtonColor: "#0d6efd",
-    }).then(()=>{
-         navigate('/AdminDashboard');
-    });
-    console.log("Saved settings:", formData);
+  if (!adminData) {
+    return <h3 className="text-center mt-5">Loading admin data...</h3>;
+  }
+  // Initial values (Replace with API response later)
+  const initialValues = {
+    adminName: adminData.adminName || "",
+    email: adminData.adminEmail || "",
+    phone: adminData.adminPhoneno || "",
+    location: adminData.adminLocaton || "",
+    password: adminData.adminPassword || "",
   };
 
-  // Dynamic theme colors
-  const cardBg = formData.darkMode ? "#2c2c2c" : "#ffffff";
-  const textColor = formData.darkMode ? "#f5f5f5" : "#212529";
-  const borderColor = formData.darkMode ? "#444" : "#dee2e6";
+
+  if (showAuthForm.show) {
+    return (
+      <AuthForm
+        mode={showAuthForm.mode} // <-- FIX: pass the mode string, not the boolean
+        isAdminLogin={true}
+        onClose={() => setShowAuthForm({ show: false, mode: "" })}
+        showAuthSwitchText={false}
+      />
+    );
+  }
 
   return (
-    <div className="w-100 min-vh-100 py-4 px-5" style={{ backgroundColor: cardBg, color: textColor }}>
-      <div
-        className="card border-0 shadow-lg"
-        style={{
-          backgroundColor: cardBg,
-          color: textColor,
-          borderColor: borderColor,
-        }}
-      >
-        <div
-          className="card-header text-center fw-bold fs-4 py-3"
-          style={{ backgroundColor: formData.darkMode ? "#0d6efd" : "#0d6efd", color: "#fff" }}
+    <div className="container py-4">
+      <div className="card shadow-lg p-4">
+        <h3 className="text-center mb-4">⚙️ Admin Settings</h3>
+
+        <Formik
+          initialValues={initialValues}
+          enableReinitialize={true}
+          validationSchema={adminSettingsValidation}
+          onSubmit={async (values, actions) => {
+            try {
+              actions.setSubmitting(true);
+              await handleSaveAdminSettings(values);
+            } finally {
+              actions.setSubmitting(false);
+            }
+          }}
         >
-          ⚙️ Admin Settings
-        </div>
-
-        <div className="card-body p-4">
-          <form onSubmit={handleSubmit} className="row g-4">
-            {/* ---------------- Profile Section ---------------- */}
-            <div className="col-12 border-bottom pb-3" style={{ borderColor }}>
-              <h5 className="text-primary">👤 Profile Settings</h5>
-              <div className="row mt-3">
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">Admin Name</label>
-                  <input
-                    type="text"
-                    name="adminName"
-                    className="form-control border-secondary"
-                    style={{ backgroundColor: cardBg, color: textColor, borderColor }}
-                    value={formData.adminName}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-control border-secondary"
-                    style={{ backgroundColor: cardBg, color: textColor, borderColor }}
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* ---------------- Password Section ---------------- */}
-            <div className="col-12 border-bottom pb-3" style={{ borderColor }}>
-              <h5 className="text-primary">🔐 Change Password</h5>
-              <div className="row mt-3">
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">Current Password</label>
-                  <input
-                    type="password"
-                    name="currentPassword"
-                    className="form-control border-secondary"
-                    style={{ backgroundColor: cardBg, color: textColor, borderColor }}
-                    value={formData.currentPassword}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">New Password</label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    className="form-control border-secondary"
-                    style={{ backgroundColor: cardBg, color: textColor, borderColor }}
-                    value={formData.newPassword}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* ---------------- System Config Section ---------------- */}
-            <div className="col-12 border-bottom pb-3" style={{ borderColor }}>
-              <h5 className="text-primary">🧭 System Configuration</h5>
-              <div className="form-check form-switch mt-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="maintenanceMode"
-                  checked={formData.maintenanceMode}
-                  onChange={handleChange}
+          {({ isSubmitting }) => (
+            <Form className="row g-4">
+              {/* Admin Name */}
+              <div className="col-md-6">
+                <label className="fw-bold">Admin Name</label>
+                <Field name="adminName" className="form-control" />
+                <ErrorMessage
+                  name="adminName"
+                  className="text-danger"
+                  component="small"
                 />
-                <label className="form-check-label">Enable Maintenance Mode</label>
               </div>
-              <div className="form-check form-switch">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="darkMode"
-                  checked={formData.darkMode}
-                  onChange={handleChange}
+
+              {/* Email */}
+              <div className="col-md-6">
+                <label className="fw-bold">Email</label>
+                <Field name="email" type="email" className="form-control" />
+                <ErrorMessage
+                  name="email"
+                  className="text-danger"
+                  component="small"
                 />
-                <label className="form-check-label">Enable Dark Mode</label>
               </div>
-            </div>
 
-            {/* ---------------- Security Section ---------------- */}
-            <div className="col-12 border-bottom pb-3" style={{ borderColor }}>
-              <h5 className="text-primary">🛡️ Security Settings</h5>
-              <div className="form-check form-switch mt-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="twoFactorAuth"
-                  checked={formData.twoFactorAuth}
-                  onChange={handleChange}
+              {/* Phone */}
+              <div className="col-md-6">
+                <label className="fw-bold">Phone Number</label>
+                <Field name="phone" className="form-control" />
+                <ErrorMessage
+                  name="phone"
+                  className="text-danger"
+                  component="small"
                 />
-                <label className="form-check-label">
-                  Enable Two-Factor Authentication
-                </label>
               </div>
-            </div>
 
-            {/* ---------------- Notification & Integration Section ---------------- */}
-            <div className="col-12 border-bottom pb-3" style={{ borderColor }}>
-              <h5 className="text-primary">📩 Notifications & Integrations</h5>
-              <div className="form-check form-switch mt-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="emailNotifications"
-                  checked={formData.emailNotifications}
-                  onChange={handleChange}
+              {/* Location */}
+              <div className="col-md-6">
+                <label className="fw-bold">Location</label>
+                <Field name="location" className="form-control" />
+                <ErrorMessage
+                  name="location"
+                  className="text-danger"
+                  component="small"
                 />
-                <label className="form-check-label">Enable Email Notifications</label>
               </div>
-            </div>
 
-            {/* ---------------- Misc Section ---------------- */}
-            <div className="col-12 pb-3">
-              <h5 className="text-primary">🌍 Miscellaneous</h5>
-              <div className="row mt-3">
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">Language</label>
-                  <select
-                    name="language"
-                    className="form-select border-secondary"
-                    style={{ backgroundColor: cardBg, color: textColor, borderColor }}
-                    value={formData.language}
-                    onChange={handleChange}
-                  >
-                    <option value="en">English</option>
-                    <option value="ur">Urdu</option>
-                    <option value="fr">French</option>
-                  </select>
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">Timezone</label>
-                  <select
-                    name="timezone"
-                    className="form-select border-secondary"
-                    style={{ backgroundColor: cardBg, color: textColor, borderColor }}
-                    value={formData.timezone}
-                    onChange={handleChange}
-                  >
-                    <option value="UTC+05:00">Pakistan (UTC+05:00)</option>
-                    <option value="UTC+00:00">UTC</option>
-                    <option value="UTC+04:00">UAE (UTC+04:00)</option>
-                  </select>
-                </div>
+              {/* Current Password */}
+              <div className="col-md-6">
+                <label className="fw-bold">Password</label>
+                {/* normalize the field name to lowercase to match initialValues */}
+                <Field
+                  name="password"
+                  type="text"
+                  className="form-control"
+                />
+                <ErrorMessage
+                  name="Password"
+                  className="text-danger"
+                  component="small"
+                />
               </div>
-            </div>
 
-            {/* ---------------- Save Button ---------------- */}
-            <div className="text-center mt-4">
-              <button type="submit" className="btn btn-primary px-5">
-                Save Changes
-              </button>
-            </div>
-          </form>
-        </div>
+              {/* Add More Admin Button */}
+              <div className="col-12 text-end">
+                <button
+                  className="btn btn-outline-success"
+                  type="button"
+                  onClick={() => setShowAuthForm({ show: true, mode: "register" })}
+                >
+                  ➕ Add More Admin
+                </button>
+              </div>
+
+              {/* Save Button */}
+              <div className="col-12 text-center">
+                <button
+                  type="submit"
+                  className="btn btn-primary px-5"
+                >
+                  {isSubmitting ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

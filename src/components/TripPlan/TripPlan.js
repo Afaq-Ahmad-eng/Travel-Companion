@@ -34,13 +34,13 @@ const TripPlan = ({ initialDestination = "", onClose }) => {
   };
 
   useEffect(() => {
-    const handleShowAuthFormAgain = (event) => {
+    const handleAuthModeChanged = (event) => {
       const mode = event.detail?.mode || "login";
       setShowAuthForm({ show: true, mode });
     };
-    window.addEventListener("showAuthFormAgain", handleShowAuthFormAgain);
+    window.addEventListener("authModeChanged", handleAuthModeChanged);
     return () => {
-      window.removeEventListener("showAuthFormAgain", handleShowAuthFormAgain);
+      window.removeEventListener("authModeChanged", handleAuthModeChanged);
     };
   }, []);
 
@@ -73,20 +73,59 @@ const TripPlan = ({ initialDestination = "", onClose }) => {
                     tripDetailsapi,
                     values
                   );
+                  // First success message
                   Swal.fire({
-                    title: "Success!",
+                    title: "Trip Created!",
                     text: responseOfTrip.message,
                     icon: "success",
-                    timer: 1000,
-                    timerProgressBar: true,
+                    timer: 1200,
                     showConfirmButton: false,
-                  }).then(()=>{
-                    localStorage.clear();
-                    navigate('/budget')
+                    timerProgressBar: true,
+                  }).then(() => {
+                    // Now ask user what to do next
+                    Swal.fire({
+                      title: "Next Step",
+                      text: "Do you want to add your budget now?",
+                      icon: "question",
+                      showCancelButton: true,
+                      confirmButtonText: "Yes, Add Budget",
+                      cancelButtonText: "Not Now",
+                      reverseButtons: true,
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        // Redirect to budget page
+                        localStorage.clear();
+                        navigate("/budget");
+                      } else {
+                        // Just close modal, stay on current page
+                        localStorage.clear();
+                        onClose && onClose();
+                      }
+                    });
                   });
                   resetForm();
                   onClose && onClose();
                 } catch (err) {
+                  console.log("we check the error ", err);
+
+                  // If token missing or expired (401 error)
+                  if (err.TokensExpire === true) {
+                    onClose && onClose();
+                    Swal.fire({
+                      title: "Login Required",
+                      text: err.message || "Your session has expired or you are not logged in. Please log in to continue.",
+                      icon: "warning",
+                      confirmButtonText: "Login",
+                    }).then(() => {
+                      // Show login popup
+                      setShowAuthForm({ show: true, mode: "login" });
+                    });
+
+                    return; // stop here
+                  }
+
+                  onClose && onClose();
+                  // Other errors
                   Swal.fire({
                     title: "Error!",
                     text:
@@ -246,7 +285,7 @@ const TripPlan = ({ initialDestination = "", onClose }) => {
           <AuthForm
             onClose={() => setShowAuthForm({ show: false, mode: "login" })}
             mode={showAuthForm.mode}
-            showAuthSwitchText={false}
+            showAuthSwitchText={true}
             onLoginSuccess={() => {
               setShowAuthForm({ show: false, mode: "login" });
             }}

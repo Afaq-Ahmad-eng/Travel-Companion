@@ -196,10 +196,10 @@
 }
 
 /* Header row */
-.tripsTable thead tr {
-  background-color: #f8f9fa;
+ .tripsTable thead tr th{ 
+  color: #212529;
   border-bottom: 2px solid #dee2e6;
-}
+} 
 
 /* Header cells */
 .tripsTable th {
@@ -241,7 +241,7 @@
 }
 
 .tripsTable th {
-  background-color: #000000; ; 
+  background-color: #CFE2FF; 
   color: white;
   padding: 16px 12px;
   text-align: left;

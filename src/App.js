@@ -2,7 +2,7 @@
 
 import Swal from 'sweetalert2';
 
-import { Routes, Route, useLocation,useNavigate, Outlet } from 'react-router-dom';
+import { Routes, Route, useLocation,useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion'; 
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -32,6 +32,9 @@ function App() {
   //state to hide the navbar on the admin panel
   const [closeNavBar, setCloseNavBar] = useState(false)
 
+    const hideNavbar =
+    location.pathname.startsWith("/AdminDashboard") ||
+    location.pathname.startsWith("/Admindashboard") ;
   // state to show auth modal globally
   const [authModal, setAuthModal] = useState({ show: false, mode: "login" });
 
@@ -98,11 +101,11 @@ function App() {
 
   const closeAuth = () => setAuthModal({ show: false, mode: "login" });
 
-  const hideNavbarRoutes = ['/budget', '/share-experience', '/translate'];
-  const hideNavBar = true;
+  const hideNavbarRoutes = ['/AdminDashboard', '/share-experience', '/translate'];
+  
   return (
     <div className="App">
-      {(!hideNavbarRoutes.includes(location.pathname) && !closeNavBar && hideNavBar)  && <Navbar />}
+      {!hideNavbar && <Navbar />}
 
       {/* Wrap Routes in AnimatePresence for animation support */}
       <AnimatePresence mode="wait">
@@ -120,11 +123,10 @@ function App() {
           {/* Add Destination Detail Route - Navbar will be hidden here */}
           <Route path="/destination/:id" element={<DestinationDetail />} />
           {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
-          <Route path='/AdminDashboard/*' element={<AdminRoutes setCloseNavBar={setCloseNavBar}/>}/>
+          <Route path='/AdminDashboard/*' element={<AdminRoutes/>}/>
           {/* <Route path="/AdminDashboard/*" element={<AdminDashboard setCloseNavBar={setCloseNavBar}/>} /> */}
           
         </Routes>
-        <Outlet/>
       </AnimatePresence>
 
       {/* Mount AuthForm at app root so it works from any route including "/" */}
