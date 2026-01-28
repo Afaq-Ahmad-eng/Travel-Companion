@@ -39,7 +39,7 @@
 
 ## Authors
 - Afaq Ahmad – Frontend and Backend and help in designing.  
-- Mamoor Ahmad – Frontend and UI/UX and Backend.
+- Mamoor Ahmad – Frontend and UI/UX.
 
 ## Contact
 Afaq Ahmad Email: afaqahmad2593@gmail.com  
